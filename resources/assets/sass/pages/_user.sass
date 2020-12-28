@@ -1,0 +1,467 @@
+.user_top
+	padding: 30px 0 40px
+
+.user_top_h
+	font-size: 36px
+	padding-bottom: 30px
+
+.user_top_btns
+	margin-bottom: 35px
+
+	.btn_mini + .btn_mini
+		margin-left: 15px
+
+.user_top_info
+	margin-top: 35px
+
+.user_top_info_item
+	width: 50%
+
+.user_top_l
+	width: 800px
+
+.user_top_info_item_h
+	font-size: 18px
+	color: #aaa
+	margin-bottom: 17px
+
+.user_top_avr
+	position: relative
+	width: 300px
+	height: 300px
+	border-radius: 50%
+	background: #aaa
+	background-size: cover
+
+.user_top_choose_avr
+	display: block
+	height: 100%
+	width: 100%
+	cursor: pointer
+
+.user_top_choose_avr_cam
+	position: absolute
+	bottom: 15px
+	right: 15px
+	background: $c1
+	padding: 15px
+	border-radius: 50%
+	transition: .3s
+
+	&:hover
+		background: #23a188
+
+.user_top_r
+	margin-top: -70px
+
+//================ Crop Avatar 
+
+.change_avatar_h
+	height: 40px
+	padding-left: 20px
+	padding-top: 20px
+	font-weight: 600
+
+.change_avatar_cont
+	position: relative
+	max-width: 500px
+	background: #fff
+	padding: 0 0 30px
+	border-radius: 15px
+	z-index: 1
+
+#change_avatar
+	flex-wrap: wrap
+	overflow: auto
+	padding: 30px 0
+
+.change_avatar_dropzone
+	width: calc( 100% - 40px )
+	height: 250px
+	margin: 20px
+
+.change_avatar_btns
+	display: flex
+	justify-content: center
+	padding: 0 20px
+
+#firefile_save
+	margin-right: 20px
+
+//================ FireFile 
+
+.firefile_dropzone
+	display: flex
+	align-items: center
+	justify-content: center
+	border: 2px dashed #eee
+	border-radius: 9px
+	text-align: center
+	cursor: pointer
+	transition: .3s
+	width: 350px
+
+	&:hover
+		border-color: #b2b2b2
+		background: #f3f3f3
+
+	.btn_mini
+		margin-top: 10px
+
+.firefile_editzone
+	display: none
+	position: relative
+	margin: 20px 0
+	min-height: 200px
+
+.firefile_editzone_mask
+	content: ''
+	display: block
+	position: absolute
+	top: 0
+	left: 0
+	right: 0
+	bottom: 0
+	z-index: 1
+	background: #000
+	opacity: .6
+
+#firefile_crop_select
+	position: absolute
+	top: 20px
+	left: 20px
+	width: 100px
+	height: 100px
+	border: 1px solid #fff
+	z-index: 5
+	cursor: move
+	user-select: none
+
+.firefile_portal
+	position: relative
+	overflow: hidden
+	width: 100%
+	height: 100%
+
+#firefile_portal_img
+	position: absolute
+	display: block
+	top: -20px
+	left: -20px
+	margin-top: -1px
+	margin-left: -1px
+	max-width: none
+	max-height: none
+
+.firefile_point
+	position: absolute
+	width: 20px
+	height: 20px
+	background: #1faa8d
+	border-radius: 50%
+	z-index: 2
+
+	&.point_tl
+		top: -10px
+		left: -10px
+		cursor: nw-resize
+
+	&.point_tr
+		top: -10px
+		right: -10px
+		cursor: ne-resize
+
+	&.point_br
+		bottom: -10px
+		right: -10px
+		cursor: nw-resize
+
+	&.point_bl
+		left: -10px
+		bottom: -10px
+		cursor: ne-resize
+
+#firefile_upload_status
+	display: none
+	align-items: center
+	justify-content: center
+	flex-wrap: wrap
+	height: 250px
+	width: 400px
+	background: #fff
+	z-index: 6
+
+.fus_wrap
+	width: 90%
+
+.fus_progress_bar
+	border: 1px solid $c-border
+	width: 100%
+	height: 35px
+	border-radius: 30px
+	margin-top: -26px
+	overflow: hidden
+
+.fus_fill
+	width: 1%
+	height: 100%
+	background: $c1
+
+.fus_text
+	text-align: center
+	font-size: 14px
+
+.utc_item
+	display: flex
+	align-items: center
+	padding: 8px 15px
+	background: #eee
+	border-radius: 5px
+
+	img
+		margin-right: 7px
+
+
+.user_top_counts
+	margin-top: 30px
+
+.firefile
+	display: none
+
+.grey
+	background: #eee
+
+.article
+	padding: 30px 0
+
+.article_h
+	font-size: 24px
+
+.article_link
+	font-size: 18px
+	color: $c1
+	border-bottom: 1px solid $c1
+	cursor: pointer
+	margin-left: 20px
+	transition: .3s
+	user-select: none
+
+	&:hover
+		color: #198f77
+
+.article_count
+	color: #bbbbbb
+	font-size: 20px
+
+//======= Posts =======
+
+.form_post_add
+	position: relative
+	display: none
+	width: 800px
+	margin: 30px auto 0
+
+	&.active
+		display: block
+
+	.input
+		width: 100%
+
+.fpa_text
+	height: 50px
+	border-radius: 5px 5px 0 0
+	resize: none
+	margin-top: 20px
+	border-bottom: none
+
+	&:hover
+		border-color: $c-border
+
+	&:focus
+		border-color: $c-border
+		box-shadow: none
+
+.fpa_attach
+	background: #fff
+	padding: 0 20px 10px
+	border-left: 1px solid $c-border
+	border-right: 1px solid $c-border
+	position: relative
+	overflow: hidden
+
+	.close
+		color: #ca0f0f
+
+		&:hover
+			color: #000
+
+	iframe
+		height: 170px
+
+	img
+		width: 40%
+
+.fpa_control
+	background: #fff
+	border-radius: 0 0 5px 5px
+	border: 1px solid $c-border
+	border-top: none
+	padding: 0 20px 20px 20px
+
+.pm_item
+	margin-right: 12px
+	cursor: pointer
+	transition: .3s
+
+	&:hover
+		opacity: .7
+
+.pm_photo
+
+	input
+		display: none
+
+.fpa_btn
+	font-size: 14px
+
+.post_wrap
+	width: 800px
+	margin: 25px auto
+	border-radius: 5px
+
+.post
+	background: #fff
+	border: 1px solid $c-border
+	padding: 20px
+
+	& + &
+		margin-top: 45px
+
+.post_top
+	margin-bottom: 20px
+	position: relative
+	align-items: flex-start
+
+	&:after
+		content: ''
+		position: absolute
+		bottom: 10px
+		width: 100%
+		border-bottom: 1px solid $c-border
+		z-index: 0
+
+.post_top__repost
+
+	&:after
+		display: none
+
+	.post_top_name
+		color: $c1
+
+	.post_top_time
+		margin-top: 5px
+
+.post_top_avr
+	width: 50px
+	height: 50px
+	border-radius: 50%
+	background-size: cover
+	margin-right: 15px
+	z-index: 1
+
+.post_top_time
+	font-size: 14px
+	color: #aaa
+
+.post_subject
+	font-weight: 600
+	margin-bottom: 5px
+
+.post_edit_btn
+	margin-top: 10px
+
+.post_body
+	color: #1f1f1f
+
+.post_attach
+	padding-top: 10px
+
+	iframe
+		width: 100%
+		max-width: 560px
+		height: 315px
+
+	img
+		max-width: 400px
+
+.post_share
+	margin-top: 20px
+	
+.psh_repost
+	margin-left: 15px
+	transition: .3s
+	cursor: pointer
+	position: relative
+
+	&.disable
+		cursor: default
+
+	&:not(.disable):hover
+		opacity: .6
+
+.psh_repost_status
+	opacity: 0
+	visibility: hidden
+	position: absolute
+	right: -220px
+	width: 200px
+	top: 0
+	font-size: 14px
+	color: #282828
+	transition: .3s
+
+	&.active
+		opacity: 1
+		visibility: visible
+
+.post_top_avr__comment
+	width: 40px
+	height: 40px
+
+.post_top__comment:after
+	display: none
+
+
+.post_edit_form
+	display: none
+
+	.input
+		width: 100%
+		
+.comments_cont
+	margin-left: 55px
+	margin-top: -35px
+	z-index: 2
+	position: relative
+
+.post_top_name_comment
+	font-weight: 500
+	color: #aaaaaa
+
+.comments_reply
+	color: $c1
+	margin-top: 5px
+	cursor: pointer
+	transition: .3s
+
+	&:hover
+		color: #168b73
+
+.comments_item
+	padding: 20px 0
+
+.comments_item + .comments_item
+	border-top: 1px solid $c-border
+
+.reply_name
+	color: $c1

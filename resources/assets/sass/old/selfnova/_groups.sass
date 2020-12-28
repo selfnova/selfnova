@@ -1,0 +1,289 @@
+.btn_group_mob
+	display: none
+
+//===============================
+//==========  GroupOne  =========
+//===============================
+
+.group_top_info
+
+	.user_top_info_item
+		width: 33%
+
+.user_top_h__group
+	padding-bottom: 15px
+
+.group_follow
+	margin-bottom: 20px
+
+	img
+		margin-right: 10px
+
+.group_review_stars
+	line-height: 1
+	margin-bottom: 10px
+
+.verify_acc
+	margin-left: 15px
+
+.fpa_line
+	width: 100%
+	max-width: 400px
+	margin-bottom: 20px
+
+	input, textarea
+		width: 100%
+
+//===============================
+//========   Group Prod   =======
+//===============================
+
+.fpa_line_item
+	width: 49% !important
+
+.fpa_photo
+	display: flex
+	height: 100%
+	width: 245px
+	background: #ffffff
+	border-radius: 10px
+	border: 1px solid $c-border
+	margin-right: 30px
+
+.products, .orders, .article
+	display: none
+	padding-top: 30px
+
+	&.active
+		display: block
+
+.form_prod_add
+	margin-top: 30px
+	display: none
+
+	&.active
+		display: flex
+
+.prod_wrap
+	padding-top: 30px
+	padding-bottom: 30px
+
+.update_sprot
+	padding-left: 35px
+	padding-right: 35px
+
+.prod
+	position: relative
+	background: #fff
+	border-radius: 10px
+	width: 275px
+	margin-right: 30px
+	padding: 15px
+	padding-top: 30px
+	margin-bottom: 30px
+
+.prod:nth-child(4n + 4)
+	margin-right: 0
+
+.prod_img
+	height: 150px
+	width: 150px
+	margin: 0 auto
+	background-size: contain
+	background-position: center center
+	background-repeat: no-repeat
+	margin-bottom: 15px
+	cursor: pointer
+
+.prod_img_pp
+	width: 50%
+	margin: 0 auto
+	background-size: contain
+	background-position: center center
+	background-repeat: no-repeat
+	margin-bottom: 15px
+	cursor: pointer
+
+.prod_line_pp
+	width: 50%
+	padding-left: 40px
+
+.prod_name_pp
+	font-size: 24px
+	margin-bottom: 3px
+
+.pop_prod_cont
+	padding-left: 60px
+	padding-right: 60px
+
+.prod_comment_pp
+	padding: 30px 0
+
+.prod_name
+	margin-bottom: 15px
+	cursor: pointer
+
+.prod_copy
+	font-size: 14px
+
+.prod_price
+	font-size: 24px
+	font-weight: 600
+
+.prod_curr
+	display: inline-block
+	font-weight: 400
+	font-size: 16px
+	vertical-align: middle
+	margin-top: 7px
+	margin-left: 3px
+
+.prod_sett
+	position: absolute
+	top: 10px
+	right: 10px
+
+.popup_order_cont
+	text-align: center
+
+.popup_order_h
+	text-align: center
+	font-size: 32px
+	font-weight: 400
+	margin-bottom: 15px
+
+.popup_order_t
+	text-align: center
+	color: #898989
+	margin-bottom: 15px
+	padding: 0 60px
+
+.popup_order_inp
+	width: 300px
+	margin: 0 auto
+	margin-bottom: 15px
+
+.posts_tab
+	background: #D7F2ED
+
+.posts_tab_item
+	padding: 15px 30px
+	transition: .3s
+	cursor: pointer
+
+	&:hover
+		color: #fff
+	&.active
+		background: $c1
+		color: #fff
+
+.order
+	position: relative
+	background: #ffffff
+	width: 100%
+	padding: 20px 0
+	border: 1px solid $c-border
+	border-radius: 5px
+	margin-bottom: 35px
+
+	&.proccessed
+		opacity: 0.6
+
+.order_id
+	padding: 0 35px
+
+.order_name
+	padding-right: 30px
+	font-weight: 600
+	max-width: 300px
+	min-width: 200px
+
+.order_phone
+	font-weight: 600
+	max-width: 200px
+	min-width: 150px
+
+.order_prod
+	width: 350px
+	padding-right: 35px
+
+.order_photo
+	width: 50px
+	margin-right: 20px
+
+.order_subject
+	margin-bottom: 5px
+
+.order_price
+	font-size: 18px
+
+	.prod_curr
+		margin-top: 2px
+		font-size: 14px
+
+
+//===============================
+//========  GroupReviews  =======
+//===============================
+
+.group_top_review
+	margin: -10px 0 20px
+	font-size: 18px
+	line-height: 1
+
+.gtr_block
+	display: inline-block
+	position: relative
+	margin-right: 15px
+	overflow: hidden
+
+.gtr_stars
+	position: relative
+	z-index: 1
+
+.gtr_stars_bg
+	position: absolute
+	top: 3px
+	left: 1px
+	height: 15px
+	width: 100%
+	background: $c1
+	z-index: 0
+
+.rating-area 
+	position: absolute
+	top: 13px
+	right: 15px
+
+.rating-area:not(:checked) > input 
+	display: none
+
+.rating-area:not(:checked) > label 
+	float: right
+	width: 25px
+	padding: 0
+	cursor: pointer
+
+.rating-area:not(:checked) > label:before 
+	content: url('/assets/images/star-white.svg')
+
+.rating-area > input:checked ~ label:before
+	content: url('/assets/images/star.svg')
+
+.rating-area:not(:checked) > label:hover:before,
+.rating-area:not(:checked) > label:hover ~ label:before
+	content: url('/assets/images/star.svg')
+
+.rating-area > input:checked + label:hover:before,
+.rating-area > input:checked + label:hover ~ label:before,
+.rating-area > input:checked ~ label:hover:before,
+.rating-area > input:checked ~ label:hover ~ label:before,
+.rating-area > label:hover ~ input:checked ~ label:before
+	content: url('/assets/images/star.svg')
+
+.rate-area > label:active 
+	position: relative
+
+.post_subject_review
+	margin-left: 10px
+	margin-bottom: 7px

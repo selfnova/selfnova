@@ -1,0 +1,93 @@
+.btn_group_mob
+	display: none
+
+//===============================
+//==========  GroupOne  =========
+//===============================
+
+.group_top_info
+
+	.user_top_info_item
+		width: 33%
+
+.user_top_h__group
+	padding-bottom: 15px
+
+.group_follow
+	margin-bottom: 20px
+
+	img
+		margin-right: 10px
+
+.group_review_stars
+	line-height: 1
+	margin-bottom: 10px
+
+.verify_acc
+	margin-left: 15px
+
+//===============================
+//========  GroupReviews  =======
+//===============================
+
+.group_top_review
+	margin: -10px 0 20px
+	font-size: 18px
+	line-height: 1
+
+.gtr_block
+	display: inline-block
+	position: relative
+	margin-right: 15px
+	overflow: hidden
+
+.gtr_stars
+	position: relative
+	z-index: 1
+
+.gtr_stars_bg
+	position: absolute
+	top: 3px
+	left: 1px
+	height: 15px
+	width: 100%
+	background: $c1
+	z-index: 0
+
+.rating-area
+	position: absolute
+	top: 13px
+	right: 15px
+
+.rating-area:not(:checked) > input
+	display: none
+
+.rating-area:not(:checked) > label
+	float: right
+	width: 25px
+	padding: 0
+	cursor: pointer
+
+.rating-area:not(:checked) > label:before
+	content: url('/img/star-white.svg')
+
+.rating-area > input:checked ~ label:before
+	content: url('/img/star.svg')
+
+.rating-area:not(:checked) > label:hover:before,
+.rating-area:not(:checked) > label:hover ~ label:before
+	content: url('/img/star.svg')
+
+.rating-area > input:checked + label:hover:before,
+.rating-area > input:checked + label:hover ~ label:before,
+.rating-area > input:checked ~ label:hover:before,
+.rating-area > input:checked ~ label:hover ~ label:before,
+.rating-area > label:hover ~ input:checked ~ label:before
+	content: url('/img/star.svg')
+
+.rate-area > label:active
+	position: relative
+
+.post_subject_review
+	margin-left: 10px
+	margin-bottom: 7px

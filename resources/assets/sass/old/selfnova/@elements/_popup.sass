@@ -1,0 +1,80 @@
+//===============================
+//============  Popup ===========
+//===============================
+
+.popup
+	position: fixed
+	display: flex
+	top: 0
+	left: 0
+	right: 0
+	bottom: 0
+	justify-content: center
+	align-items: center
+	z-index: 101
+	visibility: hidden
+	opacity: 0
+	transition: .7s
+
+	&.active
+		visibility: visible
+		opacity: 1
+
+.mask
+	position: fixed
+	top: 0
+	left: 0
+	right: 0
+	bottom: 0
+	background: rgba(0, 0, 0, 0.35)
+	cursor: pointer
+	z-index: 0
+
+.close
+	display: inline-block
+	position: absolute
+	top: 8px
+	right: 8px
+	font-family: "Font Awesome 5 Pro"
+	font-weight: 300
+	display: inline-block
+	font-style: normal
+	font-variant: normal
+	text-rendering: auto
+	line-height: 1
+	color: #ff0000
+	padding: 6px
+	font-size: 22px
+	cursor: pointer
+
+	&:before
+		content: "\f00d"
+
+	&:hover
+		color: #000
+
+.popup_cont
+	position: relative
+	width: 740px
+	background: #fff
+	padding: 60px 100px
+	border-radius: 15px
+	z-index: 1
+
+//===============================
+//===========  Youtube ==========
+//===============================
+
+.popup_youtube_cont, .popup_complaint_cont
+	width: 400px
+	padding: 35px 40px
+	text-align: center
+
+.popup_youtube_h, .popup_complaint_h
+	font-weight: 600
+	font-size: 18px
+	margin-bottom: 25px
+
+.popup_youtube_inp, .popup_music_inp, .popup_complaint_inp
+	width: 100%
+	margin-bottom: 25px
