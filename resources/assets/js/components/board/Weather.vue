@@ -1,7 +1,15 @@
 <template>
 	<div class="widget_item widget_item_wether">
-		<div class="widget_h">
-			Погода в <span class="link_a">{{ weather.settings.city }}</span>
+		<div class="widget_h flex aic">
+			<div class="widget_h_text">Погода в</div>
+			<div class="link_a"
+				@click="changeCity = true"
+				v-show="!changeCity">{{ weather.settings.city }}</div>
+			<input type="text" class="input"
+				v-model="weather.settings.city"
+				v-show="changeCity"
+				@blur="changeCity = false"
+				@change="update">
 		</div>
 
 		<div class="wiw_block">
@@ -56,7 +64,8 @@
 
 <script>
 
-import URL from '@/utils/url'
+import HTTP from '@/utils/http'
+
 
 export default {
 
@@ -66,22 +75,25 @@ export default {
 	data()
 	{
 		return {
-
+			changeCity: false
 		};
 	},
 	created() {
 
 	},
 	computed: {
-		userId()
-		{
-			return this.post.user ? this.post.user.id : this.post.group.id;
-		}
+
 	},
 	watch: {
 	},
 	methods: {
-
+		update()
+		{
+			HTTP.put('/widgets/' + this.weather.id, {settings: this.weather.settings})
+				.then(resp => {
+					this.$emit('updated');
+				});
+		}
 	}
 };
 </script>

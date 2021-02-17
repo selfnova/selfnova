@@ -8,15 +8,14 @@ mix.alias({
 
 mix.setPublicPath('public')
 	.js('resources/assets/js/app.js', 'js')
-	.sass('resources/assets/sass/app.sass', 'css')
-	.copyDirectory('resources/assets/img', 'public/img');
+	.sass('resources/assets/sass/app.sass', 'css');
 
 
 if (mix.inProduction()) {
 	mix.version()
 } else {
 	mix.webpackConfig({
-		devtool: 'eval-source-map'
+		devtool: 'eval'
 	})
 	.sourceMaps();
 

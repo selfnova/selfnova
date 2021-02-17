@@ -2,6 +2,7 @@ export default {
 
 	base_url: '/api',
 	headers: {
+		"X-Requested-With": "XMLHttpRequest",
 		'Content-Type': 'application/json;charset=utf-8',
 		'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
 		Authorization: 'Bearer ' + localStorage.getItem("user-token"),
@@ -28,6 +29,20 @@ export default {
 			}).then( response => response.json() );
 	},
 
+	postFile( url, data )
+	{
+		let fd = new FormData();
+		delete this.headers['Content-Type'];
+
+		for ( let prop in data ) fd.append( prop, data[prop]);
+
+		return fetch( this.base_url + url, {
+				method: 'POST',
+				headers: this.headers,
+				body: fd
+			}).then( response => response.json() );
+	},
+
 	put( url, data )
 	{
 		return fetch( this.base_url + url, {
@@ -41,4 +56,9 @@ export default {
 	{
 		this.headers.Authorization = 'Bearer ' + localStorage.getItem("user-token");
 	},
+
+	setSocketId( socketId )
+	{
+		this.headers['X-Socket-ID'] = socketId;
+	}
 }

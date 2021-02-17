@@ -5,12 +5,15 @@
 		<div class="wiw_block flex">
 			<textarea class="wiw_note"
 				placeholder="Здесь можно что-то написать, и текст сохранится, когда вы кликните вне поля"
-				v-model="note.settings.text"></textarea>
+				v-model="form.settings.text"
+				@change="saveText"></textarea>
 		</div>
 	</div>
 </template>
 
 <script>
+
+import HTTP from '@/utils/http'
 
 export default {
 
@@ -20,19 +23,28 @@ export default {
 	data()
 	{
 		return {
-
+			form: {
+				settings: {
+					text: ''
+				}
+			}
 		};
 	},
 	created() {
-
+		this.form.settings.text = this.note.settings ? this.note.settings.text : '';
+		this.form.id = this.note.id;
 	},
 	computed: {
 
 	},
-	watch: {
-	},
 	methods: {
-
+		saveText()
+		{
+			HTTP.post('/widgets', this.form)
+				.then(resp => {
+					console.log('resp:', resp)
+				});
+		}
 	}
 };
 </script>

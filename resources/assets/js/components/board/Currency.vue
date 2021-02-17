@@ -1,6 +1,8 @@
 <template>
 	<div class="widget_item widget_item_wether">
-		<div class="widget_h">Курсы валют</div>
+		<div class="widget_h">
+			Курсы валют к <span class="link_a">Рублю</span>
+		</div>
 
 		<div class="wiw_block flex">
 			<div class="wiw_block_item">
@@ -8,7 +10,7 @@
 				<div class="wiw_block_num">${{ currency.usd.value }}</div>
 				<div class="wiw_block_change"
 					:class="{ plus: currency.usd.value > 0 }">
-					{{ currency.usd.value > 0 ? '+' : '-' }}{{ currency.usd.change }}
+					{{ currency.usd.change > 0 ? '+' : '-' }}{{ Math.abs(currency.usd.change) }}
 				</div>
 			</div>
 			<div class="wiw_block_item">
@@ -16,7 +18,7 @@
 				<div class="wiw_block_num">€{{ currency.eur.value }}</div>
 				<div class="wiw_block_change"
 					:class="{ plus: currency.eur.value > 0 }">
-					{{ currency.eur.value > 0 ? '+' : '-' }}{{  currency.eur.change }}
+					{{ currency.eur.change > 0 ? '+' : '-' }}{{ Math.abs(currency.eur.change) }}
 				</div>
 			</div>
 		</div>

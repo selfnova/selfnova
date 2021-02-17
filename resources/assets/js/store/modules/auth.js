@@ -25,10 +25,17 @@ const actions = {
 
             HTTP.post('/login', user)
 				.then( resp => {
-                    localStorage.setItem("user-token", resp.token);
-                    commit(AUTH_SUCCESS, resp);
-                    HTTP.setToken();
-					resolve(resp);
+					if ( resp.token )
+					{
+						localStorage.setItem("user-token", resp.token);
+						commit(AUTH_SUCCESS, resp);
+						HTTP.setToken();
+						resolve(resp);
+					}
+					if ( resp.message )
+					{
+						reject(resp);
+					}
 				})
 				.catch(err => {
 					commit(AUTH_ERROR, err);

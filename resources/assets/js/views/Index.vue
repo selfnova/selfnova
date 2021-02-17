@@ -1,5 +1,5 @@
 <template>
-	<div class="wrap">
+	<div>
 		<div class="login_wrap">
 			<form class="container login" @submit.prevent="auth">
 				<img src="/img/login_people.png" alt="">
@@ -11,10 +11,17 @@
 
 						<input type="password" v-model="password" class="input" placeholder="Пароль" required>
 
+						<div class="error"
+							v-if="error">
+							{{ error }}
+						</div>
 						<button name="auth" class="btn">Войти<img src="/img/arr_l_w.png" alt=""></button>
 
 						<div class="login_pass link">Забыли пароль?</div><br>
-						<a href="registration" class="link">Регистрация</a>
+						<router-link class="link"
+							:to="{ name: 'register'}" >
+							Регистрация
+						</router-link>
 					</div>
 				</div>
 			</form>
@@ -53,7 +60,8 @@ export default {
 	data() {
 		return {
 			login: '',
-			password: ''
+			password: '',
+			error: null
 		}
 	},
 	methods: {
@@ -63,6 +71,9 @@ export default {
 			this.$store.dispatch(AUTH_REQUEST, { login, password })
 				.then(() => {
 					this.$router.push({name: 'board'});
+				})
+				.catch(err => {
+					this.error = err.message;
 				});
 		}
 	}

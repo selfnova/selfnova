@@ -25,23 +25,38 @@ class Widget extends Model
 
 	public static function getAll()
 	{
-		$widgets = self::select('widgets.*', 'ws.settings')
-			->leftJoin('widget_settings as ws', 'widgets.id', '=', 'ws.w_id')
-			->where( 'u_id', Auth::user()->id )
+		$widgets = self::getSettings()
 			->where( 'active', 1 )
 			->get()
 			->keyBy('tpl_key');
 
 		if ( isset( $widgets['weather'] ) )
-			$widgets['weather']['data'] = self::weather( $widgets['weather']['settings']['city'] );
+		{
+			if ( isset($widgets['weather']['settings']['city']) )
+				$city = $widgets['weather']['settings']['city'];
+
+			else {
+
+				$city = 'Москва';
+				$widgets['weather']['settings'] = ['city' => $city];
+			}
+
+			$widgets['weather']['data'] = self::weather( $city );
+		}
 
 		return $widgets;
 	}
 
+	public static function getSettings()
+	{
+		return self::select('widgets.*', 'ws.settings', 'ws.active')
+			->leftJoin('widget_settings as ws', 'widgets.id', '=', 'ws.w_id')
+			->where( 'u_id', Auth::id() );
+	}
+
 	private static function weather( $city )
 	{
-		$cache = null;
-		$gismetio = [];
+		$cache = [];
 		$update_every = 1200; // 20 min
 		$city = $city ?: 'Москва';
 
@@ -60,7 +75,7 @@ class Widget extends Model
 
 		$res = self::getWeather( $city_id );
 
-		$gismetio[ $city ] =
+		$cache[ $city ] =
 		[
 			'city_id' => $city_id,
 			'last_update' => time(),
@@ -74,9 +89,9 @@ class Widget extends Model
 			]
 		];
 
-		Storage::put('gismetio.json', json_encode( $gismetio ));
+		Storage::put('gismetio.json', json_encode( $cache ));
 
-		return $gismetio[ $city ];
+		return $cache[ $city ];
 	}
 
 	private static function getCityId( $city )

@@ -8,8 +8,8 @@
 	font-size: 18px
 
 .message_wrap
-	padding-bottom: 120px
-	padding-top: 120px
+	padding-bottom: 25px
+	padding-top: 25px
 
 .message_item_wrap
 	display: flex
@@ -117,21 +117,25 @@
 
 //============== Dialogs ================
 
-.dialog_wrap
-	padding-top: 150px
+.chats
+	padding-top: 30px
 	padding-bottom: 30px
 
 .dialog_item
 	position: relative
 	height: 70px
 	padding: 0 20px
-	border-radius: 8px
+	background: #f3f6f5
 
 	& + &
-		margin-top: 20px
+		margin-top: 1px
 
-	&.active
-		background: #e0f5ee
+	&:nth-child( even )
+		background: #f3fafc
+
+	&:hover
+		background: $c2
+		color: #000
 
 .del_dialog
 	top: -2px

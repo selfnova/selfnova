@@ -28,14 +28,8 @@ a:hover
 	border-radius: 7px
 	padding: 5px 0
 	font-size: 14px
-	opacity: 0
-	visibility: hidden
 	transition: .3s
 	min-width: 125px
-
-	&.active
-		opacity: 1
-		visibility: visible
 
 	&:before
 		content: ''
@@ -192,18 +186,6 @@ hr
 	.input
 		padding: 12px 20px
 
-	&.active
-
-		.select-arrow_up
-			display: inline-block
-
-		.select-arrow_down
-			display: none
-
-	&.active &_drop
-		opacity: 1
-		visibility: visible
-
 	.select-arrow_up
 		display: none
 
@@ -230,14 +212,8 @@ hr
 		background: #fff
 		box-shadow: 0px 10px 20px 0px #b6b6b6
 		border-radius: 5px
-		opacity: 0
-		visibility: hidden
 		transition: .3s
 		z-index: 70
-
-		&.active
-			opacity: 1
-			visibility: visible
 
 	&_search
 		padding: 10px 8px 10px 20px
@@ -305,7 +281,7 @@ hr
 	margin-top: -3px
 
 .header_block
-	position: relative
+	position: absolute
 	background: $c2
 	top: 70px
 	width: 100%
@@ -340,7 +316,8 @@ hr
 	padding: 35px 0
 
 .wrap
-	padding-top: 70px
+	padding-top: 125px
+	min-height: calc(100vh - 86px)
 
 .page_tab
 	display: inline-flex
@@ -363,7 +340,6 @@ hr
 //===============================
 
 header
-	padding: 17px 0
 	border-bottom: 1px solid $c-border
 
 .main_header
@@ -371,6 +347,9 @@ header
 	width: 100%
 	background: #fff
 	z-index: 70
+
+	.container
+		height: 70px
 
 .logo
 	line-height: 1
@@ -385,6 +364,8 @@ header
 
 .logo_slog
 	color: $c1
+	border-left: 1px solid $c1
+	padding-left: 20px
 
 .menu
 	margin-right: 60px
@@ -465,7 +446,10 @@ footer
 .gu_line
 	flex-flow: row wrap
 	padding: 15px 0
-	border-bottom: 1px solid $c-border
+
+	& + &
+		border-top: 1px solid $c-border
+
 
 .gu_line_avr
 	display: block

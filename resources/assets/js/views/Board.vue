@@ -11,7 +11,7 @@
 		<div class="widgets_wrap flex fww">
 
 			<div class="widget_item widget_item_news">
-				<router-link class="widget_h"
+				<router-link class="widget_h flex"
 					:to="{ name: 'news'}" >
 					Новости
 				</router-link>
@@ -40,13 +40,13 @@
 			</div>
 
 			<div class="widget_item widget_item_people">
-				<router-link class="widget_h"
+				<router-link class="widget_h flex"
 					:to="{ name: 'peoples'}" >
 					Люди
 				</router-link>
 
 				<div class="widget_posts"
-					v-if="following_posts">
+					v-if="following_posts.length">
 
 					<PostWidget v-for="( post, key ) in following_posts"
 						:post="post"
@@ -58,19 +58,22 @@
 						Подпишитесь <br>
 						на людей
 						<br>
-						<a class="btn_mini" href="/peoples">Найти людей</a>
+						<router-link class="btn_mini"
+							:to="{ name: 'peoples'}" >
+							Найти людей
+						</router-link>
 					</div>
 				</div>
 			</div>
 
 			<div class="widget_item widget_item_groups">
-				<router-link class="widget_h"
+				<router-link class="widget_h flex"
 					:to="{ name: 'groups'}" >
 					Группы
 				</router-link>
 
 				<div class="widget_posts"
-					v-if="groupPosts">
+					v-if="groupPosts.length">
 
 					<PostWidget v-for="( post, key ) in groupPosts"
 						:post="post"
@@ -82,13 +85,17 @@
 						Подпишитесь <br>
 						на группы
 						<br>
-						<a class="btn_mini" href="/groups">Найти группы</a>
+						<router-link class="btn_mini"
+							:to="{ name: 'groups'}" >
+							Найти группы
+						</router-link>
 					</div>
 				</div>
 			</div>
 
 			<Weather v-if="widgets.weather"
-				:weather="widgets.weather" />
+				:weather="widgets.weather"
+				@updated="update" />
 
 			<Currency v-if="widgets.currency"
 				:curr="widgets.currency" />
@@ -121,16 +128,19 @@ export default {
 	},
 	created()
 	{
-		HTTP.get('/board')
-			.then(resp => {
-				this.news = resp.news;
-				this.following_posts = resp.following_posts;
-				this.groupPosts = resp.group_posts;
-				this.widgets = resp.widgets;
-			});
+		this.update();
 	},
 	methods: {
-
+		update()
+		{
+			HTTP.get('/board')
+				.then(resp => {
+					this.news = resp.news;
+					this.following_posts = resp.following_posts;
+					this.groupPosts = resp.group_posts;
+					this.widgets = resp.widgets;
+				});
+		}
 	}
 };
 </script>

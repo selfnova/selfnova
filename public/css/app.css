@@ -194,7 +194,7 @@ input[type=checkbox]:checked + .check::before {
   display: inline-block;
   position: relative;
   vertical-align: middle;
-  width: 25px;
+  min-width: 25px;
   height: 25px;
   background: #31bb9f;
   border-radius: 50%;
@@ -282,6 +282,10 @@ input[type=checkbox]:checked + .check::before {
 
 .tac {
   text-align: center;
+}
+
+.fxs0 {
+  flex-shrink: 0;
 }
 
 .mb20 {
@@ -579,15 +583,8 @@ a:hover {
   border-radius: 7px;
   padding: 5px 0;
   font-size: 14px;
-  opacity: 0;
-  visibility: hidden;
   transition: 0.3s;
   min-width: 125px;
-}
-
-.context_menu.active {
-  opacity: 1;
-  visibility: visible;
 }
 
 .context_menu:before {
@@ -771,19 +768,6 @@ hr {
   padding: 12px 20px;
 }
 
-.select.active .select-arrow_up {
-  display: inline-block;
-}
-
-.select.active .select-arrow_down {
-  display: none;
-}
-
-.select.active .select_drop {
-  opacity: 1;
-  visibility: visible;
-}
-
 .select .select-arrow_up {
   display: none;
 }
@@ -813,15 +797,8 @@ hr {
   background: #fff;
   box-shadow: 0px 10px 20px 0px #b6b6b6;
   border-radius: 5px;
-  opacity: 0;
-  visibility: hidden;
   transition: 0.3s;
   z-index: 70;
-}
-
-.select_drop.active {
-  opacity: 1;
-  visibility: visible;
 }
 
 .select_search {
@@ -906,7 +883,7 @@ hr {
 }
 
 .header_block {
-  position: relative;
+  position: absolute;
   background: #e6f7f3;
   top: 70px;
   width: 100%;
@@ -949,7 +926,8 @@ hr {
 }
 
 .wrap {
-  padding-top: 70px;
+  padding-top: 125px;
+  min-height: calc(100vh - 86px);
 }
 
 .page_tab {
@@ -973,7 +951,6 @@ hr {
 }
 
 header {
-  padding: 17px 0;
   border-bottom: 1px solid #e6e5e5;
 }
 
@@ -982,6 +959,10 @@ header {
   width: 100%;
   background: #fff;
   z-index: 70;
+}
+
+.main_header .container {
+  height: 70px;
 }
 
 .logo {
@@ -1000,6 +981,8 @@ header {
 
 .logo_slog {
   color: #31bb9f;
+  border-left: 1px solid #31bb9f;
+  padding-left: 20px;
 }
 
 .menu {
@@ -1082,7 +1065,10 @@ footer {
 .gu_line {
   flex-flow: row wrap;
   padding: 15px 0;
-  border-bottom: 1px solid #e6e5e5;
+}
+
+.gu_line + .gu_line {
+  border-top: 1px solid #e6e5e5;
 }
 
 .gu_line_avr {
@@ -1257,6 +1243,11 @@ footer {
 
 .reg_form {
   text-align: left;
+  width: 330px;
+}
+
+.reg_form h3 {
+  margin-bottom: 25px;
 }
 
 .reg_wrap {
@@ -1275,7 +1266,6 @@ footer {
 }
 
 .reg_why_block {
-  display: none;
   padding: 25px;
   border: 1px solid #e6e5e5;
   margin-top: 25px;
@@ -1283,23 +1273,42 @@ footer {
   margin-right: 100px;
 }
 
-.reg_why_block.active {
-  display: block;
-}
-
 .reg_photo_icon {
   margin: 0 10px;
 }
 
 .form_policy {
-  width: 410px;
   margin-bottom: 20px;
+  font-size: 14px;
 }
 
 .reg_succ {
   padding: 60px 0;
   max-width: 600px;
   margin: 0 auto;
+}
+
+.born_day,
+.born_year {
+  width: 80px;
+}
+
+.born_day .select_name,
+.born_year .select_name {
+  min-width: auto;
+}
+
+.born_day .input,
+.born_year .input {
+  padding: 12px 15px;
+}
+
+.born_month {
+  width: 130px;
+}
+
+.born_year {
+  width: 105px;
 }
 
 .widgets_wrap {
@@ -1319,7 +1328,10 @@ footer {
 .widget_h {
   font-size: 24px;
   margin-bottom: 20px;
-  display: block;
+}
+
+.widget_h_text {
+  margin-right: 10px;
 }
 
 .news_wrap {
@@ -1609,8 +1621,8 @@ footer {
 }
 
 .message_wrap {
-  padding-bottom: 120px;
-  padding-top: 120px;
+  padding-bottom: 25px;
+  padding-top: 25px;
 }
 
 .message_item_wrap {
@@ -1737,8 +1749,8 @@ footer {
   margin-top: 20px;
 }
 
-.dialog_wrap {
-  padding-top: 150px;
+.chats {
+  padding-top: 30px;
   padding-bottom: 30px;
 }
 
@@ -1746,15 +1758,20 @@ footer {
   position: relative;
   height: 70px;
   padding: 0 20px;
-  border-radius: 8px;
+  background: #f3f6f5;
 }
 
 .dialog_item + .dialog_item {
-  margin-top: 20px;
+  margin-top: 1px;
 }
 
-.dialog_item.active {
-  background: #e0f5ee;
+.dialog_item:nth-child(even) {
+  background: #f3fafc;
+}
+
+.dialog_item:hover {
+  background: #e6f7f3;
+  color: #000;
 }
 
 .del_dialog {
@@ -1882,6 +1899,16 @@ footer {
   color: #fff;
 }
 
+.acc_del {
+  padding: 30px;
+  border-radius: 10px;
+  margin-bottom: 25px;
+}
+
+.acc_del p {
+  padding: 20px;
+}
+
 .serach_news_link {
   display: inline-block;
   color: #202020;
@@ -1916,7 +1943,13 @@ footer {
 
 .user_top_h {
   font-size: 36px;
-  padding-bottom: 30px;
+  padding-bottom: 5px;
+}
+
+.last_visit {
+  margin-bottom: 25px;
+  color: #aeaeae;
+  font-size: 14px;
 }
 
 .user_top_btns {
@@ -1932,7 +1965,7 @@ footer {
 }
 
 .user_top_info_item {
-  width: 50%;
+  width: 49%;
 }
 
 .user_top_l {
@@ -2215,13 +2248,8 @@ footer {
 
 .form_post_add {
   position: relative;
-  display: none;
   width: 800px;
   margin: 30px auto 0;
-}
-
-.form_post_add.active {
-  display: block;
 }
 
 .form_post_add .input {
@@ -2229,7 +2257,6 @@ footer {
 }
 
 .fpa_text {
-  height: 50px;
   border-radius: 5px 5px 0 0;
   resize: none;
   margin-top: 20px;
@@ -2570,14 +2597,6 @@ footer {
 .post_subject_review {
   margin-left: 10px;
   margin-bottom: 7px;
-}
-
-.people_wrap {
-  display: none;
-}
-
-.people_wrap.active {
-  display: block;
 }
 
 .people_h {

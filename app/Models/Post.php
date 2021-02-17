@@ -11,21 +11,25 @@ class Post extends Model
 {
 	use HasFactory;
 
+	protected $guarded = [];
+
 	protected $casts = [
-		'date' => 'datetime:d.m.Y в H:i',
+		'photos' => 'json',
+		'options' => 'json',
+		'updated_at' => 'datetime:d.m.Y в H:i',
 	];
 
 	public static function followingPosts()
 	{
 		$followings = self::where('type', 'post')
-			->with('repost.group:id,name,avatar', 'user:id,name,avatar')
+			->with('repost', 'user:id,name,avatar')
 			->whereIn('u_id', function( $query )
 			{
 				$query->select('to_id')
 				->from( with( new UserFollow )->getTable() )
 				->where('u_id', Auth::user()->id );
 			})
-			->orderBy('date', 'desc')
+			->latest()
 			->limit(4)
 			->get();
 
@@ -42,7 +46,7 @@ class Post extends Model
 				->from( with( new GroupFollow )->getTable() )
 				->where('u_id', Auth::user()->id );
 			})
-			->orderBy('date', 'desc')
+			->latest()
 			->limit(4)
 			->get();
 
@@ -51,7 +55,8 @@ class Post extends Model
 
 	public function repost()
 	{
-		return $this->hasOne( 'App\Models\Post', 'id', 'repost_id' );
+		return $this->hasOne( 'App\Models\Post', 'id', 'repost_id' )
+			->with('group:id,name,avatar', 'user:id,name,avatar');
 	}
 
 	public function user()
@@ -62,6 +67,12 @@ class Post extends Model
 	public function group()
 	{
 		return $this->hasOne( 'App\Models\Group', 'id', 'g_id' );
+	}
+
+	public function comments()
+	{
+		return $this->hasMany( 'App\Models\Comments', 'type_id', 'id' )
+			->with('user:id,name,avatar');
 	}
 
 }
