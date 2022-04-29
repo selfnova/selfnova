@@ -1,23 +1,21 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
-class SettingController extends Controller
+class PeopleController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index( Request $request )
+    public function index()
     {
-        $data['user'] = $request->user();
-
-		return response()->json( $data ) ?: '{}';
+        //
     }
 
     /**
@@ -26,6 +24,16 @@ class SettingController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
+	public function search(Request $request)
+    {
+		$data = User::whereRaw('CONCAT( LOWER(`name`), LOWER(`last_name`) ) REGEXP ?',
+			[$request->get('search')])
+			->isFollow()
+			->get();
+
+        return response()->json( $data ) ?: '{}';
+	}
+
     public function store(Request $request)
     {
         //
@@ -49,22 +57,9 @@ class SettingController extends Controller
      * @param  \App\Models\User  $user
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request)
+    public function update(Request $request, User $user)
     {
-		$user = $request->user();
-
-		$user->country = $request->get('country');
-		$user->city = $request->get('city');
-		$user->about = $request->get('about');
-		$user->phone = $request->get('phone');
-		$user->email = $request->get('email');
-		$user->site = $request->get('site');
-
-		$user->private_set = $request->get('private_set');
-
-		$user->save();
-
-		return response()->json( $user ) ?: '{}';
+        //
     }
 
     /**

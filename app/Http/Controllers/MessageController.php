@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers;
 
 use App\Events\MessageAdd;
 use App\Http\Controllers\Controller;
@@ -17,7 +17,6 @@ class MessageController extends Controller
      */
     public function index()
     {
-
     }
 
     /**
@@ -28,7 +27,7 @@ class MessageController extends Controller
      */
     public function store(Request $request)
     {
-        $message = Message::create([
+		$message = Message::create([
 			'u_id' => Auth::id(),
 			'chat_id' => $request->get('chat_id'),
 			'text' => $request->get('text'),

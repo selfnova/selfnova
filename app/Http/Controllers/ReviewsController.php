@@ -1,23 +1,25 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\Review;
 
-use App\Models\Post;
-use App\Events\Posted;
-
-class PostController extends Controller
+class ReviewsController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request, $group_id)
     {
-        //
+		$data = Review::where('g_id', $group_id)
+			->with('user:id,name,last_name,avatar', 'comments')
+			->latest()
+			->get();
+
+		return response()->json( $data ) ?: '{}';
     }
 
     /**
@@ -28,26 +30,25 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
-		$create_data = [
+        $create_data = [
 			'u_id' => $request->user()->id,
 			'g_id' => $request->get('g_id'),
 			'subject' => $request->get('subject'),
-			'text' => $request->get('text')
+			'text' => $request->get('text'),
+			'rating' => $request->get('rating'),
 		];
 
 		if ( $request->file('image') )
 			$create_data['photos'] =
 			[
 				$request->file('image')->store(
-					'avatars/'.$request->user()->id
+					'reviews', 'public'
 				)
 			];
 
-		$post = Post::create($create_data);
+		$review = Review::create($create_data);
 
-		$data['post'] = Post::with('repost', 'user:id,name,avatar')->find( $post->id );
-
-		broadcast(new Posted($post) );
+		$data = Review::with('user:id,name,last_name,avatar', 'comments')->find( $review->id );
 
 		return response()->json( $data ) ?: '{}';
     }
@@ -81,8 +82,14 @@ class PostController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
-        //
+        $review = Review::find($id);
+
+		if ( $review->u_id != $request->user()->id ) return false;
+
+		$review->delete();
+
+		return response()->json( ['success' => true ] ) ?: '{}';
     }
 }

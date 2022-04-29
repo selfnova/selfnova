@@ -38,7 +38,7 @@ return [
             'options' => [
                 'cluster' => 'eu',
 				'encrypted' => false,
-				'host' => '127.0.0.1',
+				'host' => 'selfnova.so',
 				'port' => 6001,
 				'scheme' => 'http',
 				'curl_options' => [

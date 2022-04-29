@@ -131,10 +131,6 @@
 
 <script>
 
-import HTTP from '@/utils/http'
-
-import { MAIN_LOAD } from "@/store/actions/main";
-import { AUTH_LOGOUT } from "@/store/actions/auth";
 
 export default {
 	components: {

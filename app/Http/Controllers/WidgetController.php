@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\WidgetSetting;
@@ -17,7 +17,7 @@ class WidgetController extends Controller
      */
     public function index()
     {
-		$data['widgets'] = Widget::getSettings()->get();
+		$data = Widget::getSettings()->get();
 
         return response()->json( $data ) ?: '{}';
     }
@@ -30,19 +30,7 @@ class WidgetController extends Controller
      */
     public function store(Request $request)
     {
-		$upd = [];
 
-		if ( $request->get('settings') )
-			$upd['settings'] = $request->get('settings');
-
-		if ( $request->get('active') !== null )
-			$upd['active'] = $request->get('active');
-
-		WidgetSetting::where( 'w_id', $request->get('id') )
-			->where('u_id', Auth::id() )
-			->update($upd);
-
-        return response()->json( ['success' => true] ) ?: '{}';
     }
 
     /**
@@ -64,7 +52,7 @@ class WidgetController extends Controller
 			->where('u_id', Auth::id() )
 			->update($upd);
 
-		return response()->json( ['success' => true, 'data' => $ws] ) ?: '{}';
+		return response()->json( ['success' => true] ) ?: '{}';
     }
 
     /**

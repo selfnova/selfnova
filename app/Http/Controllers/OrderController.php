@@ -1,12 +1,11 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Order;
 
-use App\Models\User;
-
-class UserController extends \App\Http\Controllers\Controller
+class OrderController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,7 +14,7 @@ class UserController extends \App\Http\Controllers\Controller
      */
     public function index()
     {
-
+        //
     }
 
     /**
@@ -24,9 +23,20 @@ class UserController extends \App\Http\Controllers\Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request, $g_id)
     {
-        //
+        $create_data = [
+			'u_id' => $request->user()->id,
+			'p_id' => $request->get('p_id'),
+			'g_id' => $g_id,
+			'name' => $request->get('name'),
+			'phone' => $request->get('phone'),
+			'comment' => $request->get('comment'),
+		];
+
+		$order = Order::create($create_data);
+
+		return response()->json( $order ) ?: '{}';
     }
 
     /**
@@ -37,11 +47,7 @@ class UserController extends \App\Http\Controllers\Controller
      */
     public function show($id)
     {
-		$data['user'] = User::where( 'id', $id )
-			->with('posts')
-			->first();
-
-		return response()->json( $data ) ?: '{}';
+        //
     }
 
     /**

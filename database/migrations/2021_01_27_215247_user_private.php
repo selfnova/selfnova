@@ -14,7 +14,7 @@ class UserPrivate extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->json('private_set');
+            $table->json('private_set')->nullable();
         });
     }
 

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateUsersTable extends Migration
+class Group extends Migration
 {
     /**
      * Run the migrations.
@@ -13,26 +13,24 @@ class CreateUsersTable extends Migration
      */
     public function up()
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('groups', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->nullable();
-            $table->string('last_name')->nullable();
+            $table->foreignId('u_id');
+            $table->boolean('active')->default(true);
+            $table->string('name');
+            $table->string('avatar')->nullable();
             $table->string('alias')->nullable();
-            $table->string('gender')->nullable();
-            $table->bigInteger('born')->nullable();
             $table->string('country')->nullable();
             $table->string('city')->nullable();
             $table->text('about')->nullable();
+            $table->string('address')->nullable();
+            $table->integer('service');
+
             $table->string('phone')->nullable();
             $table->string('site')->nullable();
-            $table->string('avatar')->nullable()->default(null);
             $table->integer('followers')->default(0);
-            $table->integer('followings')->default(0);
-            $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
+            $table->float('rating')->default(0.0);
             $table->boolean('verify')->default(false);
-            $table->rememberToken();
             $table->timestamps();
         });
     }
@@ -44,6 +42,6 @@ class CreateUsersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('groups');
     }
 }

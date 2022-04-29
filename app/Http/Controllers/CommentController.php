@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Comments;
@@ -39,9 +39,9 @@ class CommentController extends Controller
 
 		$comment = Comments::create($create_data);
 
-		$data['comment'] = Comments::with('user:id,name,avatar')->find( $comment->id );
+		$data = Comments::with('user:id,name,last_name,avatar')->find( $comment->id );
 
-		broadcast(new CommentAdd( $comment ) );
+		broadcast(new CommentAdd( $data ) );
 
 		return response()->json( $data ) ?: '{}';
     }
@@ -75,8 +75,12 @@ class CommentController extends Controller
      * @param  \App\Models\Comments  $comments
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Comments $comments)
+    public function destroy($id)
     {
-        //
+        $comment = Comments::find($id);
+
+		$comment->delete();
+
+		return response()->json( ['success' => true ] ) ?: '{}';
     }
 }

@@ -16,6 +16,17 @@ class Comments extends Model
 		'created_at' => 'datetime:d.m.Y в H:i',
 	];
 
+	protected static function booted()
+    {
+        static::created(function ($comment) {
+            Post::find($comment->type_id)->increment('count_comm');
+        });
+
+		static::deleted(function ($comment) {
+            Post::find($comment->type_id)->decrement('count_comm');
+        });
+    }
+
 	public function user()
 	{
 		return $this->hasOne( 'App\Models\User', 'id', 'u_id' );

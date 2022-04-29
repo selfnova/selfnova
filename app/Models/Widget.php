@@ -28,20 +28,20 @@ class Widget extends Model
 		$widgets = self::getSettings()
 			->where( 'active', 1 )
 			->get()
-			->keyBy('tpl_key');
+			->keyBy('id');
 
-		if ( isset( $widgets['weather'] ) )
+		if ( isset( $widgets[1] ) )
 		{
-			if ( isset($widgets['weather']['settings']['city']) )
-				$city = $widgets['weather']['settings']['city'];
+			if ( isset($widgets[1]['settings']['city']) )
+				$city = $widgets[1]['settings']['city'];
 
 			else {
 
 				$city = 'Москва';
-				$widgets['weather']['settings'] = ['city' => $city];
+				$widgets[1]['settings'] = ['city' => $city];
 			}
 
-			$widgets['weather']['data'] = self::weather( $city );
+			$widgets[1]['data'] = self::weather( $city );
 		}
 
 		return $widgets;

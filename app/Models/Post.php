@@ -19,10 +19,34 @@ class Post extends Model
 		'updated_at' => 'datetime:d.m.Y в H:i',
 	];
 
+	public function getPhotosAttribute( $value )
+	{
+		if ( !$value ) return $value;
+
+		return [env('APP_URL').'/storage/'.json_decode($value)[0]];
+	}
+
+	protected static function booted()
+    {
+        static::deleted(function ($post) {
+            Comments::where('type_id', $post->id)->delete();
+
+			if ( $post->repost_id ) {
+				Post::find($post->repost_id)->decrement('count_repost');
+			}
+        });
+
+		static::created(function ($post) {
+			if ( $post->repost_id ) {
+				Post::find($post->repost_id)->increment('count_repost');
+			}
+        });
+    }
+
 	public static function followingPosts()
 	{
 		$followings = self::where('type', 'post')
-			->with('repost', 'user:id,name,avatar')
+			->with('repost', 'user:id,name,last_name,avatar')
 			->whereIn('u_id', function( $query )
 			{
 				$query->select('to_id')
@@ -43,7 +67,7 @@ class Post extends Model
 			->whereIn('g_id', function( $query )
 			{
 				$query->select('to_id')
-				->from( with( new GroupFollow )->getTable() )
+				->from( with( new UserFollow )->getTable() )
 				->where('u_id', Auth::user()->id );
 			})
 			->latest()
@@ -56,7 +80,9 @@ class Post extends Model
 	public function repost()
 	{
 		return $this->hasOne( 'App\Models\Post', 'id', 'repost_id' )
-			->with('group:id,name,avatar', 'user:id,name,avatar');
+			->select('posts.*')
+			->selectRaw('1 as reposted')
+			->with('group:id,name,avatar', 'user:id,name,last_name,avatar', 'comments');
 	}
 
 	public function user()
@@ -72,7 +98,7 @@ class Post extends Model
 	public function comments()
 	{
 		return $this->hasMany( 'App\Models\Comments', 'type_id', 'id' )
-			->with('user:id,name,avatar');
+			->with('user:id,name,last_name,avatar');
 	}
 
 }

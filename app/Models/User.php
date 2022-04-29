@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -10,12 +11,13 @@ use function Illuminate\Events\queueable;
 
 use Laravel\Passport\HasApiTokens;
 
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
 	use HasApiTokens, HasFactory, Notifiable;
 
 	protected $fillable = [
 		'name',
+		'last_name',
 		'email',
 		'password',
 	];
@@ -28,7 +30,7 @@ class User extends Authenticatable
 	protected $casts = [
 		'born' => 'datetime:d.m.Y',
 		'email_verified_at' => 'datetime',
-		'private_set' => 'json',
+		'private_set' => 'json'
 	];
 
 	protected $appends = ['full_name'];
@@ -36,6 +38,11 @@ class User extends Authenticatable
 	public function getFullNameAttribute()
 	{
 		return "{$this->name} {$this->last_name}";
+	}
+
+	public function getAvatarAttribute( $value )
+	{
+		return env('APP_URL').'/storage/'.($value);
 	}
 
 	protected static function booted()
@@ -66,21 +73,5 @@ class User extends Authenticatable
 			});
     }
 
-	/**
-	 * posts
-	 *
-	 * @return Collection
-	 */
-	public function posts()
-    {
-		return $this->hasMany(Post::class, 'u_id', 'id')
-			->leftJoin('posts as reposted', function ($join) {
-				$join->on('posts.id', '=', 'reposted.repost_id')
-					->where('reposted.u_id', Auth::user()->id);
-			})
-			->select('posts.*', 'reposted.id as reposted')
-			->with('repost', 'user:id,name,avatar', 'comments')
-			->latest();
-	}
 
 }
