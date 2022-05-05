@@ -17,6 +17,7 @@ class UserFollow extends Migration
             $table->integer('u_id');
             $table->integer('to_id');
 			$table->unique(['u_id', 'to_id']);
+			$table->timestamps();
         });
     }
 

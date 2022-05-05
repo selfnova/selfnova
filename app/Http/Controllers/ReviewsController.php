@@ -7,11 +7,11 @@ use App\Models\Review;
 
 class ReviewsController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    public function __construct()
+    {
+  		$this->middleware('auth:api', ['except' => ['index', 'show']]);
+    }
+
     public function index(Request $request, $group_id)
     {
 		$data = Review::where('g_id', $group_id)
@@ -30,6 +30,9 @@ class ReviewsController extends Controller
      */
     public function store(Request $request)
     {
+		if ( Review::whereExist('u_id', $request->user()->id) ) {
+			return response()->json( ['exists' => true] ) ?: '{}';
+		}
         $create_data = [
 			'u_id' => $request->user()->id,
 			'g_id' => $request->get('g_id'),

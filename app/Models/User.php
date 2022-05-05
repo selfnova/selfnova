@@ -42,7 +42,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
 	public function getAvatarAttribute( $value )
 	{
-		return env('APP_URL').'/storage/'.($value);
+		return config('app.url').'/storage/'.($value);
 	}
 
 	protected static function booted()

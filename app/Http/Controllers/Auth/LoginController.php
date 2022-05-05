@@ -21,7 +21,7 @@ class LoginController extends Controller
 
         if (!Auth::attempt($credentials)) {
             return response()->json([
-                'message' => 'You cannot sign with those credentials',
+                'message' => 'Вы не можете войти с этими данными',
                 'errors' => 'Unauthorised'
             ], 401);
         }

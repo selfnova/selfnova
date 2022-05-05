@@ -19,11 +19,19 @@ class Comments extends Model
 	protected static function booted()
     {
         static::created(function ($comment) {
-            Post::find($comment->type_id)->increment('count_comm');
+			if ( $comment->type == 'review' ) {
+				Review::find($comment->type_id)->increment('count_comm');
+			} else {
+				Post::find($comment->type_id)->increment('count_comm');
+			}
         });
 
 		static::deleted(function ($comment) {
-            Post::find($comment->type_id)->decrement('count_comm');
+			if ( $comment->type == 'review' ) {
+				Review::find($comment->type_id)->decrement('count_comm');
+			} else {
+				Post::find($comment->type_id)->decrement('count_comm');
+			}
         });
     }
 

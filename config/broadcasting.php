@@ -37,8 +37,8 @@ return [
             'app_id' => env('PUSHER_APP_ID'),
             'options' => [
                 'cluster' => 'eu',
-				'encrypted' => false,
-				'host' => 'selfnova.so',
+				'encrypted' => true,
+				'host' => env('APP_HOST'),
 				'port' => 6001,
 				'scheme' => 'http',
 				'curl_options' => [

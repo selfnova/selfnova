@@ -10,15 +10,15 @@ class ChatUser extends Model
 {
 	use HasFactory;
 
-	protected $fillable = ['u_id', 'chat_id'];
-
-	public function message()
-	{
-		return $this->hasOne( 'App\Models\Message', 'id', 'last_msg' );
-	}
+	protected $fillable = ['u_id', 'g_id', 'chat_id'];
 
 	public function user()
 	{
 		return $this->hasOne( 'App\Models\User', 'id', 'u_id' );
+	}
+
+	public function group()
+	{
+		return $this->hasOne( 'App\Models\Group', 'id', 'g_id' );
 	}
 }

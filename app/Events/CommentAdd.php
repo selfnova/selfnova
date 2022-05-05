@@ -11,6 +11,7 @@ use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
 use App\Models\Comments;
+use App\Models\Notification;
 
 class CommentAdd implements ShouldBroadcast
 {
@@ -26,6 +27,13 @@ class CommentAdd implements ShouldBroadcast
 	public function __construct( Comments $comment)
 	{
 		$this->comment = $comment;
+
+		$noty = new Notification;
+		$noty->u_id = $comment->u_id;
+		$noty->type_id = $comment->id;
+		$noty->type = 'comment';
+		$noty->status = 0;
+		$noty->save();
 	}
 
 	public function broadcastWith()

@@ -10,11 +10,11 @@ use App\Events\CommentAdd;
 
 class CommentController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+	public function __construct()
+    {
+  		$this->middleware('auth:api', ['except' => ['index', 'show']]);
+    }
+
     public function index()
     {
         //
@@ -41,7 +41,7 @@ class CommentController extends Controller
 
 		$data = Comments::with('user:id,name,last_name,avatar')->find( $comment->id );
 
-		broadcast(new CommentAdd( $data ) );
+		broadcast(new CommentAdd( $data ) )->toOthers();
 
 		return response()->json( $data ) ?: '{}';
     }

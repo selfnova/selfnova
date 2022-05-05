@@ -20,7 +20,7 @@ class Group extends Model
 
 	public function getAvatarAttribute( $value )
 	{
-		return env('APP_URL').'/storage/'.($value);
+		return config('app.url').'/storage/'.($value);
 	}
 
 	public function scopeIsFollow($query)

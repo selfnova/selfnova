@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Models\News;
 use App\Models\Post;
 use App\Models\Widget;
+use App\Models\User;
+use App\Models\Group;
 
 class BoardController extends \App\Http\Controllers\Controller
 {
@@ -21,6 +23,25 @@ class BoardController extends \App\Http\Controllers\Controller
 		$data['following_posts'] = Post::followingPosts();
 		$data['group_posts'] = Post::followingGroupPosts();
 		$data['widgets'] = Widget::getAll();
+
+		return response()->json( $data ) ?: '{}';
+	}
+
+	public function search(Request $request)
+	{
+		$data['users'] = User::whereRaw('CONCAT( LOWER(`name`), LOWER(`last_name`) ) REGEXP ?',
+			[$request->get('q')])
+			->isFollow()
+			->get();
+		$data['groups'] = Group::whereRaw(
+				'LOWER(`name`) REGEXP ?',
+				[$request->get('q')]
+			)
+			->isFollow()
+			->get();
+		$data['news'] = News::where('name', $request->get('q'))->get();
+		$data['posts'] = Post::where('subject', $request->get('q'))
+			->with('user:id,name,last_name,avatar', 'group:id,name,avatar', 'comments')->get();
 
 		return response()->json( $data ) ?: '{}';
 	}

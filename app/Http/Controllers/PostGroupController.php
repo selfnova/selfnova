@@ -6,39 +6,24 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 use App\Models\Post;
-use App\Models\Repost;
 
 use App\Events\Posted;
 
-class PostController extends Controller
+class PostGroupController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index(Request $request, $user_id)
+	public function __construct()
     {
-        $data = Post::where('posts.u_id', $user_id)
-			->whereNull('posts.g_id')
-			->leftJoin('posts as reposts', function ($join) use ($request) {
-				$join->on('posts.id', '=', 'reposts.repost_id')
-					->where('reposts.u_id', $request->user()->id);
-			})
-			->select('posts.*', 'reposts.id as reposted')
-			->with('repost', 'user:id,name,last_name,avatar', 'comments')
-			->latest()
-			->get();
-
-		return response()->json( $data ) ?: '{}';
+  		$this->middleware('auth:api', ['except' => ['index', 'show']]);
     }
 
-	public function groupPosts(Request $request, $group_id)
+	public function index(Request $request, $group_id)
     {
+		$my_id = $request->user() ? $request->user()->id : 0;
+
         $data = Post::where('posts.g_id', $group_id)
-			->leftJoin('posts as reposts', function ($join) use ($request) {
+			->leftJoin('posts as reposts', function ($join) use ($my_id) {
 				$join->on('posts.id', '=', 'reposts.repost_id')
-					->where('reposts.u_id', $request->user()->id);
+					->where('reposts.u_id', $my_id);
 			})
 			->select('posts.*', 'reposts.id as reposted')
 			->with('group:id,name,avatar', 'comments')
@@ -75,32 +60,11 @@ class PostController extends Controller
 
 		$post = Post::create($create_data);
 
-		$data = Post::with('user:id,name,last_name,avatar', 'comments')->find( $post->id );
+		$data = Post::with('group:id,name,avatar', 'comments')->find( $post->id );
 
 		broadcast(new Posted($post) );
 
 		return response()->json( $data ) ?: '{}';
-    }
-
-	public function repost(Request $request)
-    {
-		$u_id = $request->user()->id;
-
-		$check = Post::select('u_id')
-			->where('u_id', $u_id)
-			->where('repost_id', $request->get('post_id'))
-			->first();
-
-		if ( $check ) return response()->json( ['success' => false] );
-
-		$data = [
-			'u_id' => $u_id,
-			'repost_id' => $request->get('post_id'),
-		];
-
-		$post = Post::create($data);
-
-		return response()->json( ['success' => true] ) ?: '{}';
     }
 
     /**

@@ -10,11 +10,11 @@ use Illuminate\Support\Facades\Auth;
 
 class GroupController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    public function __construct()
+    {
+  		$this->middleware('auth:api', ['except' => ['show']]);
+    }
+
     public function index()
     {
         //
@@ -46,9 +46,11 @@ class GroupController extends Controller
 			'city' => $request->get('city'),
 		];
 
-		$path = $request->file('avatar')->store('group/avatars', 'public');
+		if ( $request->file('avatar') ) {
+			$path = $request->file('avatar')->store('group/avatars', 'public');
+			$data['avatar'] = $path;
+		}
 
-		$data['avatar'] = $path;
 
 		$group = Group::create($data);
 
@@ -65,9 +67,24 @@ class GroupController extends Controller
     {
         $data = Group::where( 'groups.id', $id )
 			->isFollow()
-			->first();
+			->firstOrFail();
 
 		return response()->json( $data ) ?: '{}';
+    }
+
+	public function uploadAvatar( Request $request, $id )
+    {
+		$request->validate([
+		   'avatar' => 'mimetypes:image/jpeg,image/png',
+		]);
+
+		$path = $request->file('avatar')->store('group/avatars', 'public');
+
+		$group = Group::find($id);
+		$group->avatar = $path;
+		$group->save();
+
+		return response()->json( ['success' => true] ) ?: '{}';
     }
 
 	public function subscribe( Request $request, $group_id )

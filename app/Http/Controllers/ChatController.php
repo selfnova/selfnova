@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\Chat;
 use App\Models\ChatUser;
+use App\Models\Group;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -15,17 +17,25 @@ class ChatController extends Controller
     public function index()
     {
 		$select = [
-			'chats.id', 'chats.name',
-			'chats.to_from->'.Auth::id().' as u_id',
+			'chats.id', 'chats.name', 'messages.text as text',
+			'chats.to_from->'.Auth::id().' as u_id', 'chat_users.g_id'
 		];
 
 		$data = ChatUser::select( $select )
-			->where('u_id', Auth::id())
+			->where('chat_users.u_id', Auth::id())
 			->join('chats', 'chats.id', '=', 'chat_users.chat_id')
-			->with('message')
-			->with('user:id,name,last_name,avatar')
+			->leftJoin('messages', 'messages.id', '=', 'chats.last_msg')
+			->with('user:id,name,last_name,avatar', 'group:id,name,avatar')
 			->orderBy('chats.last_msg', 'DESC')
 			->get();
+
+		$data->each(function($item) {
+			if ( isSet($item->g_id) ) {
+				unset($item->user);
+			} else {
+				unset($item->group);
+			}
+		});
 
 		return response()->json( $data ) ?: '{}';
     }
@@ -48,7 +58,7 @@ class ChatController extends Controller
     public function show( $id )
     {
         $select = [
-			'chats.*', 'cu.u_id'
+			'chats.*', 'cu.u_id', 'cu.g_id'
 		];
 
 		$data = Chat::select( $select )
@@ -56,8 +66,13 @@ class ChatController extends Controller
 				$join->on('cu.chat_id', '=', 'chats.id')
 					->where('u_id', '!=', Auth::id() );
 			})
-			->with('user:id,name,last_name,avatar')
 			->find( $id );
+
+		if ( $data->g_id ) {
+			$data->group = Group::select('name', 'avatar', 'id')->find($data->g_id);
+		} else {
+			$data->user = User::select('name', 'last_name', 'avatar', 'id')->find($data->u_id);
+		}
 
 		return response()->json( $data ) ?: '{}';
     }

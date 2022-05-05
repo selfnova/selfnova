@@ -21,13 +21,13 @@ class VerifyEmailController extends Controller
 		$user = User::find($request->route('id'));
 
         if ($user->hasVerifiedEmail()) {
-            return redirect('http://localhost:3000/');
+            return redirect(env('FRONT_URL'));
         }
 
         if ($user->markEmailAsVerified()) {
             event(new Verified($user));
         }
 
-        return redirect('http://localhost:3000/email-confirmed');
+        return redirect(env('FRONT_URL').'/email-confirmed');
 	}
 }

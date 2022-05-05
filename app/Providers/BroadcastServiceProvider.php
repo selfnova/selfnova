@@ -18,7 +18,7 @@ class BroadcastServiceProvider extends ServiceProvider
         Broadcast::routes(
 			[
 				'middleware' => ['api'],
-				'prefix' => 'api',
+				'prefix' => 'api/v1',
 				'group' => base_path('routes/api.php')
 			]
 		);

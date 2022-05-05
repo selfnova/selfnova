@@ -11,4 +11,8 @@ class Order extends Model
 
 	protected $guarded = [];
 
+	public function product()
+	{
+		return $this->hasOne( 'App\Models\Product', 'id', 'p_id' );
+	}
 }

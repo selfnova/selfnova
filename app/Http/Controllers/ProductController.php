@@ -9,11 +9,12 @@ use App\Models\Product;
 
 class ProductController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
+	public function __construct()
+    {
+  		$this->middleware('auth:api', ['except' => ['index', 'show']]);
+    }
+
     public function index(Request $request, $group_id)
     {
         $data = Product::where('g_id', $group_id)

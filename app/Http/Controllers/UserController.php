@@ -18,6 +18,11 @@ class UserController extends \App\Http\Controllers\Controller
      *
      * @return \Illuminate\Http\Response
      */
+	public function __construct()
+    {
+  		$this->middleware('auth:api', ['except' => ['show']]);
+    }
+
     public function index()
     {
 
@@ -33,14 +38,14 @@ class UserController extends \App\Http\Controllers\Controller
     {
 		$data = User::where( 'users.id', $id )
 			->isFollow()
-			->first();
+			->firstOrFail();
 
 		return response()->json( $data ) ?: '{}';
     }
 
 	public function me()
     {
-		$data = Auth::user();
+		$data = User::find(Auth::id());
 
 		return response()->json( $data ) ?: '{}';
     }
@@ -138,13 +143,12 @@ class UserController extends \App\Http\Controllers\Controller
 		$request->validate([
 		   'avatar' => 'mimetypes:image/jpeg,image/png',
 		]);
-		$data = Auth::user();
 
 		$path = $request->file('avatar')->store('user/avatars', 'public');
 
-		$uaer = Auth::user();
-		$uaer->avatar = $path;
-		$uaer->save();
+		$user = Auth::user();
+		$user->avatar = $path;
+		$user->save();
 
 		return response()->json( ['success' => true] ) ?: '{}';
     }
@@ -160,7 +164,22 @@ class UserController extends \App\Http\Controllers\Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $user = $request->user();
+
+		$user->country = $request->get('country');
+		$user->name = $request->get('name');
+		$user->last_name = $request->get('last_name');
+		$user->city = $request->get('city');
+		$user->about = $request->get('about');
+		$user->phone = $request->get('phone');
+		$user->site = $request->get('site');
+		$user->born = $request->get('born');
+
+		$user->private_set = $request->get('private_set');
+
+		$user->save();
+
+		return response()->json( $user ) ?: '{}';
     }
 
     /**

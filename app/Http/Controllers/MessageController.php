@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Events\MessageAdd;
 use App\Http\Controllers\Controller;
 use App\Models\Message;
+use App\Models\Chat;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -27,11 +28,25 @@ class MessageController extends Controller
      */
     public function store(Request $request)
     {
-		$message = Message::create([
+		$data = [
 			'u_id' => Auth::id(),
 			'chat_id' => $request->get('chat_id'),
 			'text' => $request->get('text'),
-		]);
+		];
+
+		if ( $request->get('video') ) $data['video'] = $request->get('video');
+		if ( $request->file('image') )
+			$data['photo'] =
+				$request->file('image')->store(
+					'messages', 'public'
+				);
+
+		$message = Message::create($data);
+
+		Chat::where('id', $request->get('chat_id'))
+			->update(['last_msg' => $message->id]);
+
+
 
 		$response = [
 			'success' => true,

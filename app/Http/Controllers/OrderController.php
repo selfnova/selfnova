@@ -7,14 +7,16 @@ use App\Models\Order;
 
 class OrderController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
+    public function __construct()
     {
-        //
+  		$this->middleware('auth:api');
+    }
+
+    public function index( Request $request, $g_id )
+    {
+		$order = Order::where('g_id', $g_id)->with('product')->get();
+
+		return response()->json( $order ) ?: '{}';
     }
 
     /**
@@ -68,8 +70,14 @@ class OrderController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
-        //
+        $order = Order::find($id);
+
+		// if ( $order->u_id != $request->user()->id ) return false;
+
+		$order->delete();
+
+		return response()->json( ['success' => true ] ) ?: '{}';
     }
 }

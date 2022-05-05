@@ -54,7 +54,7 @@ class Post extends Model
 				->where('u_id', Auth::user()->id );
 			})
 			->latest()
-			->limit(4)
+			->limit(3)
 			->get();
 
 		return $followings;
@@ -71,7 +71,7 @@ class Post extends Model
 				->where('u_id', Auth::user()->id );
 			})
 			->latest()
-			->limit(4)
+			->limit(3)
 			->get();
 
 		return $followings;

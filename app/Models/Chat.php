@@ -30,13 +30,20 @@ class Chat extends Model
 		if ( !$chat_id )
 		DB::transaction(function () use ($request, &$chat_id)
 		{
+			$u_id = $request->get('u_id');
+
+			if ( $request->get('g_id') ) {
+				$group = Group::select('u_id')->find($request->get('g_id'));
+				$u_id = $group->u_id;
+			}
+
 			$data = [
 				'creator' => Auth::id(),
 				'type' => $request->get('u_id') ? 1 : 2,
 				'name' => $request->get('name'),
 				'to_from' => [
-					Auth::id() => $request->get('u_id'),
-					$request->get('u_id') => Auth::id()
+					Auth::id() => $u_id,
+					$u_id => Auth::id()
 				]
 			];
 
@@ -45,11 +52,13 @@ class Chat extends Model
 
 			ChatUser::create([
 				'u_id' => Auth::id(),
+				'g_id' => $request->get('g_id'),
 				'chat_id' => $chat->id
 			]);
 
 			ChatUser::create([
-				'u_id' => $request->get('u_id'),
+				'u_id' => $u_id,
+				'g_id' => $request->get('g_id'),
 				'chat_id' => $chat->id
 			]);
 		});

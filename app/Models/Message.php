@@ -17,6 +17,13 @@ class Message extends Model
 
 	protected $appends = ['time'];
 
+	public function getPhotoAttribute( $value )
+	{
+		if ( !$value ) return null;
+
+		return env('APP_URL').'/storage/'.($value);
+	}
+
 	public function getTimeAttribute()
 	{
 		return $this->created_at->format('H:i');

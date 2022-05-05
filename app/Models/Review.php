@@ -30,7 +30,7 @@ class Review extends Model
 				->where('g_id', $review->g_id)
 				->get();
 
-			$avg_rating = $ratings->avg('rating');
+			$avg_rating = $ratings->avg('rating') ?: 0;
 
 			Group::where('id', $review->g_id)
 				->update(['rating' => $avg_rating]);
@@ -40,7 +40,7 @@ class Review extends Model
 				->where('g_id', $review->g_id)
 				->get();
 
-			$avg_rating = $ratings->avg('rating');
+			$avg_rating = $ratings->avg('rating') ?: 0;
 
 			Group::where('id', $review->g_id)
 				->update(['rating' => $avg_rating]);
