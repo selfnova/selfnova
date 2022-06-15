@@ -85,6 +85,16 @@ class GroupController extends Controller
 		return response()->json( $data ) ?: '{}';
     }
 
+	public function recomended()
+	{
+		$recomended = Group::where('verify', 1)
+			->inRandomOrder()
+			->limit(4)
+			->get();
+
+		return $recomended;
+	}
+
 	public function uploadAvatar( Request $request, $id )
     {
 		$request->validate([

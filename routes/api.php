@@ -82,12 +82,14 @@ Route::group(['prefix' => 'v1'], function () {
 		Route::get('users/followings',[UserController::class, 'followings']);
 		Route::get('users/{user_id}/subscribe', [UserController::class, 'subscribe']);
 		Route::get('users/followings/group',[UserController::class, 'followingsGroup']);
+		Route::get('users/recomended',[UserController::class, 'recomended']);
 		Route::apiResource('users', \UserController::class);
 
 		Route::post('groups/{id}/avatar', [GroupController::class, 'uploadAvatar']);
 		Route::get('groups/{group_id}/subscribe', [GroupController::class, 'subscribe']);
 		Route::get('groups/{group_id}/restore', [GroupController::class, 'restore']);
 		Route::post('groups/search', [GroupController::class, 'search']);
+		Route::get('groups/recomended',[GroupController::class, 'recomended']);
 		Route::apiResource('groups', \GroupController::class);
 
 		Route::post('post/repost', [PostUserController::class, 'repost']);
