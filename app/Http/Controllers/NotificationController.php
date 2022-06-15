@@ -17,7 +17,7 @@ class NotificationController extends Controller
         $noty = Notification::where('u_id', $r->user()->id)
 			->with('comment')
 			->latest()
-			->limit(20)
+			->limit(10)
 			->get();
 
 		return response()->json( $noty ) ?: '{}';

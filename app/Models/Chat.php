@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use function Illuminate\Events\queueable;
 
 class Chat extends Model
 {
@@ -23,6 +24,20 @@ class Chat extends Model
 	 * @param  mixed $request
 	 * @return Object
 	 */
+
+	public function group()
+	{
+		return $this->hasOne( 'App\Models\Group', 'id', 'g_id' );
+	}
+
+	protected static function booted()
+    {
+		static::deleted( queueable(function ($chat)
+		{
+			ChatUser::where('chat_id', $chat->id)->delete();
+			Message::where('chat_id', $chat->id)->delete();
+		}));
+    }
 	public static function createChat( $request )
 	{
 		$chat_id = self::check( $request );
@@ -68,7 +83,7 @@ class Chat extends Model
 
 	public static function check( $request )
 	{
-		$chat = ChatUser::select('chat_users.id')
+		$chat = ChatUser::select('chat_users.chat_id as id')
 			->join('chat_users as cu2', 'cu2.chat_id', '=', 'chat_users.chat_id')
 			->where('chat_users.u_id', Auth::id())
 			->where('cu2.u_id', $request->get('u_id'))

@@ -15,9 +15,9 @@ class CommentController extends Controller
   		$this->middleware('auth:api', ['except' => ['index', 'show']]);
     }
 
-    public function index()
+    public function index( $post_id )
     {
-        //
+        return response()->json( Comments::where('type_id', $post_id)->with('user:id,name,last_name,avatar')->simplePaginate(4) ) ?: '{}';
     }
 
     /**
@@ -32,7 +32,7 @@ class CommentController extends Controller
 			'u_id' => $request->user()->id,
 			'type_id' => $request->get('type_id'),
 			'reply_id' => $request->get('reply_id'),
-			'text' => $request->get('text')
+			'text' => $this->replaceLink( $request->get('text') )
 		];
 
 		if ( $request->get('type') ) $create_data['type'] = $request->get('type');
@@ -45,6 +45,14 @@ class CommentController extends Controller
 
 		return response()->json( $data ) ?: '{}';
     }
+
+	protected function replaceLink( $text )
+	{
+		$preg = '/((https|http):\/\/[a-zA-Z0-9-.\/]+)/';
+		$link = '<a target="_blank" href="$1">$1</a>';
+
+		return preg_replace($preg, $link, $text);
+	}
 
     /**
      * Display the specified resource.

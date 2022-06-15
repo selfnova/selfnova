@@ -26,10 +26,16 @@ class PeopleController extends Controller
      */
 	public function search(Request $request)
     {
-		$data = User::whereRaw('CONCAT( LOWER(`name`), LOWER(`last_name`) ) REGEXP ?',
-			[$request->get('search')])
-			->isFollow()
-			->get();
+		$query = User::isFollow();
+
+		if ( $request->get('search') ) {
+			$query = $query->whereRaw("CONCAT( LOWER(`name`), ' ', LOWER(`last_name`) ) REGEXP ?",
+				[$request->get('search')]);
+		}
+
+		if ( $request->get('city') ) $query = $query->where('city', $request->get('city'));
+
+		$data = $query->get();
 
         return response()->json( $data ) ?: '{}';
 	}

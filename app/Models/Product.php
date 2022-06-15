@@ -7,9 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 
 use Illuminate\Support\Facades\Auth;
 
+use Orchid\Attachment\Attachable;
+use Orchid\Filters\Filterable;
+use Orchid\Screen\AsSource;
+
 class Product extends Model
 {
-	use HasFactory;
+	use HasFactory, AsSource, Filterable, Attachable;
 
 	protected $guarded = [];
 
@@ -18,11 +22,15 @@ class Product extends Model
 		'updated_at' => 'datetime:d.m.Y в H:i',
 	];
 
+	protected $allowedSorts = [
+        'created_at'
+    ];
+
 	public function getPhotosAttribute( $value )
 	{
 		if ( !$value ) return $value;
 
-		return [env('APP_URL').'/storage/'.json_decode($value)[0]];
+		return [config('app.url').'/storage/'.json_decode($value)[0]];
 	}
 
 	protected static function booted()

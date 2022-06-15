@@ -31,7 +31,7 @@ class MessageController extends Controller
 		$data = [
 			'u_id' => Auth::id(),
 			'chat_id' => $request->get('chat_id'),
-			'text' => $request->get('text'),
+			'text' => $this->replaceLink( $request->get('text') ),
 		];
 
 		if ( $request->get('video') ) $data['video'] = $request->get('video');
@@ -58,6 +58,14 @@ class MessageController extends Controller
 
 		return response()->json( $response ) ?: '{}';
     }
+
+	protected function replaceLink( $text )
+	{
+		$preg = '/((https|http):\/\/[a-zA-Z0-9-.\/]+)/';
+		$link = '<a target="_blank" href="$1">$1</a>';
+
+		return preg_replace($preg, $link, $text);
+	}
 
     /**
      * Display the specified resource.

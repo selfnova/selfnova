@@ -25,14 +25,16 @@ class ChatController extends Controller
 			->where('chat_users.u_id', Auth::id())
 			->join('chats', 'chats.id', '=', 'chat_users.chat_id')
 			->leftJoin('messages', 'messages.id', '=', 'chats.last_msg')
-			->with('user:id,name,last_name,avatar', 'group:id,name,avatar')
+			->with('user:id,name,last_name,avatar', 'group:id,u_id,name,avatar')
 			->orderBy('chats.last_msg', 'DESC')
 			->get();
 
 		$data->each(function($item) {
-			if ( isSet($item->g_id) ) {
+			if ( isSet($item->g_id) && $item->group->u_id != Auth::id() ) {
 				unset($item->user);
+				unset($item->group->u_id);
 			} else {
+				$item->in_group = $item->group;
 				unset($item->group);
 			}
 		});
@@ -62,16 +64,19 @@ class ChatController extends Controller
 		];
 
 		$data = Chat::select( $select )
+			->with('user:id,name,last_name,avatar', 'group:id,u_id,name,avatar')
 			->join('chat_users as cu', function ($join) {
 				$join->on('cu.chat_id', '=', 'chats.id')
 					->where('u_id', '!=', Auth::id() );
 			})
 			->find( $id );
 
-		if ( $data->g_id ) {
-			$data->group = Group::select('name', 'avatar', 'id')->find($data->g_id);
+		if ( isSet($data->g_id) && $data->group->u_id != Auth::id() ) {
+			unset($data->user);
+			unset($data->group->u_id);
 		} else {
-			$data->user = User::select('name', 'last_name', 'avatar', 'id')->find($data->u_id);
+			$data->in_group = $data->group;
+			unset($data->group);
 		}
 
 		return response()->json( $data ) ?: '{}';
@@ -97,6 +102,8 @@ class ChatController extends Controller
      */
     public function destroy(Chat $chat)
     {
-        //
+		$res = $chat->delete();
+
+		return response()->json( ['success' => true] ) ?: '{}';
     }
 }

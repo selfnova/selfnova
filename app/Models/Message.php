@@ -15,13 +15,18 @@ class Message extends Model
 		'created_at' => 'datetime'
 	];
 
+	protected function serializeDate($date)
+	{
+		return $date->timezone('Europe/Moscow')->format('Y-m-d H:i:s');
+	}
+
 	protected $appends = ['time'];
 
 	public function getPhotoAttribute( $value )
 	{
 		if ( !$value ) return null;
 
-		return env('APP_URL').'/storage/'.($value);
+		return config('app.url').'/storage/'.($value);
 	}
 
 	public function getTimeAttribute()

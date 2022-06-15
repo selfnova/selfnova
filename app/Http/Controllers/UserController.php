@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Models\UserFollow;
 use App\Models\Group;
 use App\Models\GroupFollow;
+use Carbon\Carbon;
 
 class UserController extends \App\Http\Controllers\Controller
 {
@@ -40,14 +41,23 @@ class UserController extends \App\Http\Controllers\Controller
 			->isFollow()
 			->firstOrFail();
 
+		if ( $data->is_ban ) return response()->json( ['is_ban' => true ] ) ?: '{}';
+
 		return response()->json( $data ) ?: '{}';
     }
 
 	public function me()
     {
-		$data = User::find(Auth::id());
+		$data = User::withTrashed()->find(Auth::id());
 
 		return response()->json( $data ) ?: '{}';
+    }
+
+	public function meDelete()
+    {
+		$user = User::find(Auth::id())->delete();
+
+		return response()->json( ['success' => true] ) ?: '{}';
     }
 
 	public function subscribe( Request $request, $user_id )
@@ -93,7 +103,7 @@ class UserController extends \App\Http\Controllers\Controller
 			})
 			->isFollow()
 			->latest()
-			->get();
+			->simplePaginate(50);
 
 		return response()->json( $followers ) ?: '{}';
 	}
@@ -108,7 +118,7 @@ class UserController extends \App\Http\Controllers\Controller
 			})
 			->isFollow()
 			->latest()
-			->get();
+			->simplePaginate(50);
 
 		return response()->json( $followings ) ?: '{}';
 	}
@@ -121,6 +131,7 @@ class UserController extends \App\Http\Controllers\Controller
 					->from( with( new GroupFollow )->getTable() )
 					->where('u_id', Auth::user()->id );
 			})
+			->withTrashed()
 			->isFollow()
 			->latest()
 			->get();
@@ -174,6 +185,7 @@ class UserController extends \App\Http\Controllers\Controller
 		$user->phone = $request->get('phone');
 		$user->site = $request->get('site');
 		$user->born = $request->get('born');
+		$user->photoblog = $request->get('photoblog');
 
 		$user->private_set = $request->get('private_set');
 

@@ -22,15 +22,16 @@ class PostUserController extends Controller
 		$my_id = $request->user() ? $request->user()->id : 0;
 
         $data = Post::where('posts.u_id', $user_id)
+			->where('posts.type', $request->get('type') ?: 'post')
 			->whereNull('posts.g_id')
 			->leftJoin('posts as reposts', function ($join) use ($my_id) {
 				$join->on('posts.id', '=', 'reposts.repost_id')
 					->where('reposts.u_id', $my_id);
 			})
 			->select('posts.*', 'reposts.id as reposted')
-			->with('repost', 'user:id,name,last_name,avatar,private_set', 'comments')
+			->with('repost', 'user:id,name,last_name,avatar,private_set')
 			->latest()
-			->get();
+			->simplePaginate(5);
 
 		return response()->json( $data ) ?: '{}';
     }
@@ -47,9 +48,10 @@ class PostUserController extends Controller
 			'u_id' => $request->user()->id,
 			'g_id' => $request->get('g_id'),
 			'subject' => $request->get('subject'),
-			'text' => $request->get('text'),
+			'text' => $this->replaceLink( $request->get('text') ),
 			'video' => $request->get('video'),
 			'music' => $request->get('music'),
+			'type' => $request->get('type') ?: 'post'
 		];
 
 		if ( $request->file('image') )
@@ -68,6 +70,14 @@ class PostUserController extends Controller
 
 		return response()->json( $data ) ?: '{}';
     }
+
+	protected function replaceLink( $text )
+	{
+		$preg = '/((https|http):\/\/[a-zA-Z0-9-.\/\?\=\&\%\_\(\)]+)/';
+		$link = '<a target="_blank" href="$1">$1</a>';
+
+		return preg_replace($preg, $link, $text);
+	}
 
 	public function repost(Request $request)
     {
@@ -98,7 +108,6 @@ class PostUserController extends Controller
      */
     public function show($id)
     {
-        //
     }
 
     /**
@@ -115,7 +124,7 @@ class PostUserController extends Controller
 		if ( $post->u_id != $request->user()->id ) return false;
 
 		$post->subject = $request->get('subject');
-		$post->text = $request->get('text');
+		$post->text = $this->replaceLink( $request->get('text') );
 
 		if ( $request->get('video') ) {
 			$post->photos = null;

@@ -54,6 +54,16 @@ class GroupController extends Controller
 
 		$group = Group::create($data);
 
+		$follow = new GroupFollow;
+
+		$follow->u_id  = Auth::id();
+		$follow->to_id = $group->id;
+
+		$follow->save();
+
+		User::where('id', Auth::id())->increment('following_groups');
+		Group::where('id', $group->id)->increment('followers');
+
 		return response()->json( ['success' => true, 'g_id' => $group->id] ) ?: '{}';
     }
 
@@ -66,8 +76,11 @@ class GroupController extends Controller
     public function show($id)
     {
         $data = Group::where( 'groups.id', $id )
+			->withTrashed()
 			->isFollow()
 			->firstOrFail();
+
+		if ( $data->is_ban ) return response()->json( ['is_ban' => true ] ) ?: '{}';
 
 		return response()->json( $data ) ?: '{}';
     }
@@ -163,8 +176,17 @@ class GroupController extends Controller
      * @param  \App\Models\Group  $group
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Group $group)
+	public function restore($group_id)
     {
-        //
+        $user = Group::withTrashed()->find($group_id)->restore();
+
+		return response()->json( ['success' => true] ) ?: '{}';
+    }
+
+    public function destroy($group_id)
+    {
+        $user = Group::find($group_id)->delete();
+
+		return response()->json( ['success' => true] ) ?: '{}';
     }
 }

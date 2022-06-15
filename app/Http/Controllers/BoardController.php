@@ -9,6 +9,7 @@ use App\Models\Post;
 use App\Models\Widget;
 use App\Models\User;
 use App\Models\Group;
+use App\Models\City;
 
 class BoardController extends \App\Http\Controllers\Controller
 {
@@ -19,7 +20,7 @@ class BoardController extends \App\Http\Controllers\Controller
 	 */
 	public function index()
 	{
-		$data['news'] = News::get();
+		$data['news'] = News::limit(6)->latest()->get();
 		$data['following_posts'] = Post::followingPosts();
 		$data['group_posts'] = Post::followingGroupPosts();
 		$data['widgets'] = Widget::getAll();
@@ -42,6 +43,15 @@ class BoardController extends \App\Http\Controllers\Controller
 		$data['news'] = News::where('name', $request->get('q'))->get();
 		$data['posts'] = Post::where('subject', $request->get('q'))
 			->with('user:id,name,last_name,avatar', 'group:id,name,avatar', 'comments')->get();
+
+		return response()->json( $data ) ?: '{}';
+	}
+
+	public function searchCity(Request $request)
+	{
+		$data = City::whereRaw('LOWER(`name`) REGEXP ?',
+			[$request->get('q')])
+			->get();
 
 		return response()->json( $data ) ?: '{}';
 	}

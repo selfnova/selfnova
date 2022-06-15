@@ -19,7 +19,7 @@ class News extends Migration
             $table->string('alias');
             $table->integer('active')->default(0);
             $table->string('photo');
-            $table->string('banner');
+            $table->string('banner')->nullable();
             $table->text('content')->nullable();
             $table->text('short_cont')->nullable();
             $table->text('description')->nullable();

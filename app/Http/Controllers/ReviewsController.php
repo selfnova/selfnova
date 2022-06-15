@@ -30,7 +30,12 @@ class ReviewsController extends Controller
      */
     public function store(Request $request)
     {
-		if ( Review::whereExist('u_id', $request->user()->id) ) {
+		if (
+			Review::where([
+				['u_id', '=', $request->user()->id],
+				['g_id', '=', $request->get('g_id')]
+			])->first()
+		) {
 			return response()->json( ['exists' => true] ) ?: '{}';
 		}
         $create_data = [

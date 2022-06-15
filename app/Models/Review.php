@@ -4,13 +4,17 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-
+use Orchid\Attachment\Attachable;
+use Orchid\Filters\Filterable;
+use Orchid\Screen\AsSource;
 class Review extends Model
 {
-    use HasFactory;
+    use HasFactory, AsSource, Filterable, Attachable;
 
 	protected $guarded = [];
-
+	protected $allowedSorts = [
+        'created_at'
+    ];
 	protected $casts = [
 		'photos' => 'json',
 		'updated_at' => 'datetime:d.m.Y в H:i',
@@ -20,7 +24,7 @@ class Review extends Model
 	{
 		if ( !$value ) return $value;
 
-		return [env('APP_URL').'/storage/'.json_decode($value)[0]];
+		return [config('app.url').'/storage/'.json_decode($value)[0]];
 	}
 
 	protected static function booted()

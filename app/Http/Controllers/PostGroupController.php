@@ -28,7 +28,7 @@ class PostGroupController extends Controller
 			->select('posts.*', 'reposts.id as reposted')
 			->with('group:id,name,avatar', 'comments')
 			->latest()
-			->get();
+			->simplePaginate(5);
 
 		return response()->json( $data ) ?: '{}';
     }
@@ -45,7 +45,7 @@ class PostGroupController extends Controller
 			'u_id' => $request->user()->id,
 			'g_id' => $request->get('g_id'),
 			'subject' => $request->get('subject'),
-			'text' => $request->get('text'),
+			'text' => $this->replaceLink( $request->get('text') ),
 			'video' => $request->get('video'),
 			'music' => $request->get('music'),
 		];
@@ -67,6 +67,14 @@ class PostGroupController extends Controller
 		return response()->json( $data ) ?: '{}';
     }
 
+	protected function replaceLink( $text )
+	{
+		$preg = '/((https|http):\/\/[a-zA-Z0-9-.\/\?\=\&\%\_]+)/';
+		$link = '<a target="_blank" href="$1">$1</a>';
+
+		return preg_replace($preg, $link, $text);
+	}
+
     /**
      * Display the specified resource.
      *
@@ -75,7 +83,7 @@ class PostGroupController extends Controller
      */
     public function show($id)
     {
-        //
+		return response()->json( Post::with('group:id,name,avatar', 'user:id,name,last_name,avatar', 'comments')->find($id) ) ?: '{}';
     }
 
     /**
@@ -92,7 +100,7 @@ class PostGroupController extends Controller
 		if ( $post->u_id != $request->user()->id ) return false;
 
 		$post->subject = $request->get('subject');
-		$post->text = $request->get('text');
+		$post->text = $this->replaceLink( $request->get('text') );
 
 		if ( $request->get('video') ) {
 			$post->photos = null;

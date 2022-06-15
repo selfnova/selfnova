@@ -7,9 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 
 use Illuminate\Support\Facades\Auth;
 
+use Orchid\Attachment\Attachable;
+use Orchid\Filters\Filterable;
+use Orchid\Screen\AsSource;
+
 class Post extends Model
 {
-	use HasFactory;
+	use HasFactory, AsSource, Filterable, Attachable;
 
 	protected $guarded = [];
 
@@ -17,19 +21,30 @@ class Post extends Model
 		'photos' => 'json',
 		'options' => 'json',
 		'updated_at' => 'datetime:d.m.Y в H:i',
+		'created_at' => 'datetime:d.m.Y в H:i',
 	];
+
+	protected $allowedSorts = [
+        'created_at'
+    ];
+
+	protected function serializeDate($date)
+	{
+		return $date->timezone('Europe/Moscow')->format('Y-m-d H:i:s');
+	}
+
 
 	public function getPhotosAttribute( $value )
 	{
 		if ( !$value ) return $value;
 
-		return [env('APP_URL').'/storage/'.json_decode($value)[0]];
+		return [config('app.url').'/storage/'.json_decode($value)[0]];
 	}
 
 	protected static function booted()
     {
         static::deleted(function ($post) {
-            Comments::where('type_id', $post->id)->delete();
+            Comments::where('type_id', $post->id)->where('type', 'post')->delete();
 
 			if ( $post->repost_id ) {
 				Post::find($post->repost_id)->decrement('count_repost');
@@ -45,7 +60,10 @@ class Post extends Model
 
 	public static function followingPosts()
 	{
-		$followings = self::where('type', 'post')
+		$followings = self::where(function ($query) {
+				$query->where('type', 'post')
+					->orWhere('type', 'photo');
+			})
 			->with('repost', 'user:id,name,last_name,avatar')
 			->whereIn('u_id', function( $query )
 			{
@@ -53,6 +71,7 @@ class Post extends Model
 				->from( with( new UserFollow )->getTable() )
 				->where('u_id', Auth::user()->id );
 			})
+			->whereNull('g_id')
 			->latest()
 			->limit(3)
 			->get();
@@ -67,7 +86,7 @@ class Post extends Model
 			->whereIn('g_id', function( $query )
 			{
 				$query->select('to_id')
-				->from( with( new UserFollow )->getTable() )
+				->from( with( new GroupFollow )->getTable() )
 				->where('u_id', Auth::user()->id );
 			})
 			->latest()
@@ -98,7 +117,8 @@ class Post extends Model
 	public function comments()
 	{
 		return $this->hasMany( 'App\Models\Comments', 'type_id', 'id' )
-			->with('user:id,name,last_name,avatar');
+			->with('user:id,name,last_name,avatar')
+			->limit(3);
 	}
 
 }
