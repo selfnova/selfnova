@@ -15,6 +15,7 @@ use App\Http\Controllers\PostUserController;
 use App\Http\Controllers\NewsController;
 use App\Http\Controllers\FollowerController;
 use App\Http\Controllers\ViewController;
+use App\Http\Controllers\MonetOrderController;
 
 use App\Models\User;
 use App\Models\Group;
@@ -101,7 +102,11 @@ Route::group(['prefix' => 'v1'], function () {
 
 		Route::apiResource('messages', MessageController::class);
 		Route::apiResource('chats', ChatController::class);
+
 		Route::post('views/mark', [ViewController::class, 'mark']);
+
+		Route::post('monet_orders', [MonetOrderController::class, 'store']);
+
 	});
 
 	//===== Auth API =====
