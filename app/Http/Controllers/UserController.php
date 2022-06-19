@@ -139,6 +139,16 @@ class UserController extends \App\Http\Controllers\Controller
 		return response()->json( $followings ) ?: '{}';
 	}
 
+	public function recomended()
+	{
+		$recomended = User::where('verify', 1)
+			->inRandomOrder()
+			->limit(4)
+			->get();
+
+		return $recomended;
+	}
+
 	public function search(Request $request)
     {
 		$data['peoples'] = User::whereRaw('CONCAT( LOWER(`name`), LOWER(`last_name`) ) REGEXP ?',

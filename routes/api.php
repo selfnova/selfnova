@@ -14,6 +14,9 @@ use App\Http\Controllers\PeopleController;
 use App\Http\Controllers\PostUserController;
 use App\Http\Controllers\NewsController;
 use App\Http\Controllers\FollowerController;
+use App\Http\Controllers\ViewController;
+use App\Http\Controllers\MonetOrderController;
+
 
 use App\Models\User;
 use App\Models\Group;
@@ -81,12 +84,14 @@ Route::group(['prefix' => 'v1'], function () {
 		Route::get('users/followings',[UserController::class, 'followings']);
 		Route::get('users/{user_id}/subscribe', [UserController::class, 'subscribe']);
 		Route::get('users/followings/group',[UserController::class, 'followingsGroup']);
+		Route::get('users/recomended',[UserController::class, 'recomended']);
 		Route::apiResource('users', \UserController::class);
 
 		Route::post('groups/{id}/avatar', [GroupController::class, 'uploadAvatar']);
 		Route::get('groups/{group_id}/subscribe', [GroupController::class, 'subscribe']);
 		Route::get('groups/{group_id}/restore', [GroupController::class, 'restore']);
 		Route::post('groups/search', [GroupController::class, 'search']);
+		Route::get('groups/recomended',[GroupController::class, 'recomended']);
 		Route::apiResource('groups', \GroupController::class);
 
 		Route::post('post/repost', [PostUserController::class, 'repost']);
@@ -98,6 +103,10 @@ Route::group(['prefix' => 'v1'], function () {
 
 		Route::apiResource('messages', MessageController::class);
 		Route::apiResource('chats', ChatController::class);
+
+		Route::post('views/mark', [ViewController::class, 'mark']);
+
+		Route::post('monet_orders', [MonetOrderController::class, 'store']);
 	});
 
 	//===== Auth API =====
