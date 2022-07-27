@@ -45,9 +45,15 @@ class Comments extends Model
 			} else if ( $comment->type == 'news' ) {
 			} else {
 				Post::find($comment->type_id)->decrement('count_comm');
+				Notification::where('type', 'comment')->where('type_id', $comment->id)->delete();
 			}
         });
     }
+
+	protected function serializeDate($date)
+	{
+		return $date->timezone('Europe/Moscow')->format('Y-m-d H:i:s');
+	}
 
 	public function user()
 	{

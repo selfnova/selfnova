@@ -29,9 +29,9 @@ class PostUserController extends Controller
 					->where('reposts.u_id', $my_id);
 			})
 			->select('posts.*', 'reposts.id as reposted')
-			->with('repost', 'user:id,name,last_name,avatar,private_set')
+			->with('repost', 'user:id,name,last_name,avatar,private_set', 'viewers')
 			->latest()
-			->simplePaginate(5);
+			->paginate( $request->get('type') == 'photo' ? 12 : 5);
 
 		return response()->json( $data ) ?: '{}';
     }
@@ -73,7 +73,7 @@ class PostUserController extends Controller
 
 	protected function replaceLink( $text )
 	{
-		$preg = '/((https|http):\/\/[a-zA-Z0-9-.\/\?\=\&\%\_\(\)]+)/';
+		$preg = '/((https|http):\/\/[a-zA-Z0-9-.\/\?\=\&\%\_\(\)\#]+)/';
 		$link = '<a target="_blank" href="$1">$1</a>';
 
 		return preg_replace($preg, $link, $text);

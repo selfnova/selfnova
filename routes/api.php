@@ -13,10 +13,10 @@ use App\Http\Controllers\SupportController;
 use App\Http\Controllers\PeopleController;
 use App\Http\Controllers\PostUserController;
 use App\Http\Controllers\NewsController;
+use App\Http\Controllers\MessageController;
 use App\Http\Controllers\FollowerController;
 use App\Http\Controllers\ViewController;
 use App\Http\Controllers\MonetOrderController;
-
 
 use App\Models\User;
 use App\Models\Group;
@@ -73,6 +73,8 @@ Route::group(['prefix' => 'v1'], function () {
 		Route::get('me', [UserController::class, 'me'])->name('me');
 		Route::delete('me', [UserController::class, 'meDelete']);
 		Route::get('board', [BoardController::class, 'index'])->name('board');
+		Route::get('feed_users', [BoardController::class, 'userFeed']);
+		Route::get('feed_groups', [BoardController::class, 'groupFeed']);
 		Route::get('searchCity', [BoardController::class, 'searchCity']);
 		Route::post('support', [SupportController::class, 'store']);
 		Route::post('complains', [SupportController::class, 'report']);
@@ -101,10 +103,12 @@ Route::group(['prefix' => 'v1'], function () {
 		Route::apiResource('peoples', \PeopleController::class);
 		Route::apiResource('notifications', \NotificationController::class);
 
-		Route::apiResource('messages', MessageController::class);
+		Route::post('/messages/{chat_id}/read', [MessageController::class, 'read']);
+		Route::apiResource('messages', \MessageController::class);
 		Route::apiResource('chats', ChatController::class);
 
 		Route::post('views/mark', [ViewController::class, 'mark']);
+		Route::get('posts/{post_id}/views', [ViewController::class, 'index']);
 
 		Route::post('monet_orders', [MonetOrderController::class, 'store']);
 	});

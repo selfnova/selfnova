@@ -18,7 +18,8 @@ class ChatController extends Controller
     {
 		$select = [
 			'chats.id', 'chats.name', 'messages.text as text',
-			'chats.to_from->'.Auth::id().' as u_id', 'chat_users.g_id'
+			'chats.to_from->'.Auth::id().' as u_id', 'chat_users.g_id',
+			'chat_users.unread_msg'
 		];
 
 		$data = ChatUser::select( $select )

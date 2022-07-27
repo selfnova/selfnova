@@ -6,6 +6,7 @@ use App\Events\MessageAdd;
 use App\Http\Controllers\Controller;
 use App\Models\Message;
 use App\Models\Chat;
+use App\Models\ChatUser;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -46,7 +47,10 @@ class MessageController extends Controller
 		Chat::where('id', $request->get('chat_id'))
 			->update(['last_msg' => $message->id]);
 
-
+		ChatUser::where('chat_id', $request->get('chat_id'))
+			->where('u_id', '!=', $request->user()->id)
+			->first()
+			->increment('unread_msg');
 
 		$response = [
 			'success' => true,
@@ -61,7 +65,7 @@ class MessageController extends Controller
 
 	protected function replaceLink( $text )
 	{
-		$preg = '/((https|http):\/\/[a-zA-Z0-9-.\/]+)/';
+		$preg = '/((https|http):\/\/[a-zA-Z0-9-.\/\?\=\&\%\_\(\)\,а-яёА-Я\#]+)/';
 		$link = '<a target="_blank" href="$1">$1</a>';
 
 		return preg_replace($preg, $link, $text);
@@ -73,6 +77,14 @@ class MessageController extends Controller
      * @param  \App\Models\Message  $message
      * @return \Illuminate\Http\Response
      */
+	public function read(Request $request, $chat_id)
+    {
+		Message::whereIn('id', $request->get('ids'))->update(['is_read' => true]);
+		ChatUser::where('chat_id', $chat_id)
+			->where('u_id', $request->user()->id)
+			->update(['unread_msg' => 0]);
+		return response()->json( $request->get('ids') ) ?: '{}';
+    }
     public function show( $chat_id )
     {
 		$messages = Message::where('chat_id', $chat_id)

@@ -3,10 +3,23 @@
 namespace App\Http\Controllers;
 
 use App\Models\View;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class ViewController extends Controller
 {
+	public function index(Request $request, $post_id)
+	{
+		$data = User::whereIn('id', View::where('post_id', $post_id)
+				->orderBy('id', 'DESC')
+				->pluck('viewer_id')
+				->toArray()
+			)
+			->simplePaginate(50);
+
+		return $data;
+	}
+
     public function mark(Request $request)
 	{
 		$validated = $request->validate([

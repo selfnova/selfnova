@@ -37,10 +37,14 @@ class View extends Model
 		});
 	}
 
+	public function user()
+	{
+		return $this->hasOne( 'App\Models\User', 'id', 'viewer_id' );
+	}
+
 	public function check()
 	{
 		$exists = self::where( $this->toArray() )
-				->whereDate('created_at', '>', now()->subDays(1))
 				->exists();
 		return !$exists;
 	}

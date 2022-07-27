@@ -88,6 +88,7 @@ class GroupController extends Controller
 	public function recomended()
 	{
 		$recomended = Group::where('verify', 1)
+			->isFollow()
 			->inRandomOrder()
 			->limit(4)
 			->get();

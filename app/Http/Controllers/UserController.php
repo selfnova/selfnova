@@ -9,8 +9,10 @@ use Illuminate\Support\Facades\Storage;
 use App\Models\User;
 use App\Models\UserFollow;
 use App\Models\Group;
+use App\Models\ChatUser;
 use App\Models\GroupFollow;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends \App\Http\Controllers\Controller
 {
@@ -49,6 +51,13 @@ class UserController extends \App\Http\Controllers\Controller
 	public function me()
     {
 		$data = User::withTrashed()->find(Auth::id());
+		$data->unread_msg = 0;
+
+		$chats = ChatUser::where('u_id', Auth::id())->get();
+
+		foreach ( $chats as $value ) {
+			$data->unread_msg += $value['unread_msg'];
+		}
 
 		return response()->json( $data ) ?: '{}';
     }
@@ -142,6 +151,7 @@ class UserController extends \App\Http\Controllers\Controller
 	public function recomended()
 	{
 		$recomended = User::where('verify', 1)
+			->isFollow()
 			->inRandomOrder()
 			->limit(4)
 			->get();
@@ -196,8 +206,11 @@ class UserController extends \App\Http\Controllers\Controller
 		$user->site = $request->get('site');
 		$user->born = $request->get('born');
 		$user->photoblog = $request->get('photoblog');
-
 		$user->private_set = $request->get('private_set');
+
+		if ( $request->get('password') ) {
+			$user->password = Hash::make($request->get('password'));
+		}
 
 		$user->save();
 

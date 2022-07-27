@@ -28,10 +28,20 @@ class BoardController extends \App\Http\Controllers\Controller
 		return response()->json( $data ) ?: '{}';
 	}
 
+	public function userFeed()
+	{
+		return response()->json( Post::followingPosts(10) ) ?: '{}';
+	}
+
+	public function groupFeed()
+	{
+		return response()->json( Post::followingGroupPosts(10) ) ?: '{}';
+	}
+
 	public function search(Request $request)
 	{
 		$data['users'] = User::whereRaw('CONCAT( LOWER(`name`), LOWER(`last_name`) ) REGEXP ?',
-			[$request->get('q')])
+			[strtolower($request->get('q'))])
 			->isFollow()
 			->get();
 		$data['groups'] = Group::whereRaw(

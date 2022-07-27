@@ -58,13 +58,13 @@ class Post extends Model
         });
     }
 
-	public static function followingPosts()
+	public static function followingPosts( $count = null )
 	{
 		$followings = self::where(function ($query) {
 				$query->where('type', 'post')
 					->orWhere('type', 'photo');
 			})
-			->with('repost', 'user:id,name,last_name,avatar')
+			->with('repost', 'user:id,name,last_name,avatar', 'viewers')
 			->whereIn('u_id', function( $query )
 			{
 				$query->select('to_id')
@@ -72,26 +72,28 @@ class Post extends Model
 				->where('u_id', Auth::user()->id );
 			})
 			->whereNull('g_id')
-			->latest()
-			->limit(3)
-			->get();
+			->latest();
+
+		if ( $count ) $followings = $followings->simplePaginate($count);
+		else $followings = $followings->limit(3)->get();
 
 		return $followings;
 	}
 
-	public static function followingGroupPosts()
+	public static function followingGroupPosts( $count = null )
 	{
 		$followings = self::where('type', 'post')
-			->with('group:id,name,avatar')
+			->with('group:id,name,avatar', 'viewers')
 			->whereIn('g_id', function( $query )
 			{
 				$query->select('to_id')
 				->from( with( new GroupFollow )->getTable() )
 				->where('u_id', Auth::user()->id );
 			})
-			->latest()
-			->limit(3)
-			->get();
+			->latest();
+
+		if ( $count ) $followings = $followings->simplePaginate($count);
+		else $followings = $followings->limit(3)->get();
 
 		return $followings;
 	}
@@ -101,7 +103,14 @@ class Post extends Model
 		return $this->hasOne( 'App\Models\Post', 'id', 'repost_id' )
 			->select('posts.*')
 			->selectRaw('1 as reposted')
-			->with('group:id,name,avatar', 'user:id,name,last_name,avatar', 'comments');
+			->with('group:id,name,avatar', 'user:id,name,last_name,avatar', 'comments', 'viewers');
+	}
+
+	public function viewers()
+	{
+		return $this->hasOne( 'App\Models\View', 'post_id', 'id' )
+			->orderBy('id', 'DESC')
+			->with('user:id,name,last_name,avatar');
 	}
 
 	public function user()

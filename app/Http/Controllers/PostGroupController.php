@@ -26,7 +26,7 @@ class PostGroupController extends Controller
 					->where('reposts.u_id', $my_id);
 			})
 			->select('posts.*', 'reposts.id as reposted')
-			->with('group:id,name,avatar', 'comments')
+			->with('group:id,name,avatar', 'comments', 'viewers')
 			->latest()
 			->simplePaginate(5);
 
@@ -69,7 +69,7 @@ class PostGroupController extends Controller
 
 	protected function replaceLink( $text )
 	{
-		$preg = '/((https|http):\/\/[a-zA-Z0-9-.\/\?\=\&\%\_]+)/';
+		$preg = '/((https|http):\/\/[a-zA-Z0-9-.\/\?\=\&\%\_\(\)\#]+)/';
 		$link = '<a target="_blank" href="$1">$1</a>';
 
 		return preg_replace($preg, $link, $text);
@@ -83,7 +83,7 @@ class PostGroupController extends Controller
      */
     public function show($id)
     {
-		return response()->json( Post::with('group:id,name,avatar', 'user:id,name,last_name,avatar', 'comments')->find($id) ) ?: '{}';
+		return response()->json( Post::with('group:id,name,avatar', 'user:id,name,last_name,avatar', 'comments', 'viewers')->find($id) ) ?: '{}';
     }
 
     /**

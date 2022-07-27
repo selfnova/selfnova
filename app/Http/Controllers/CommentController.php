@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Comments;
+use App\Models\Post;
 use Illuminate\Http\Request;
 
 use App\Events\CommentAdd;
@@ -17,7 +18,12 @@ class CommentController extends Controller
 
     public function index( $post_id )
     {
-        return response()->json( Comments::where('type_id', $post_id)->with('user:id,name,last_name,avatar')->simplePaginate(4) ) ?: '{}';
+        return response()->json(
+			Comments::where('type_id', $post_id)
+				->where('type', 'post' )
+				->with('user:id,name,last_name,avatar')
+				->simplePaginate(4) )
+			?: '{}';
     }
 
     /**
