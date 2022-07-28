@@ -122,6 +122,12 @@ class User extends Authenticatable implements MustVerifyEmail
 			User::where('id', $user->id)->increment('followings');
 			User::where('id', 1)->increment('followers');
 		}));
+
+
+		static::deleted(function ($user)
+		{
+			$user->comments->each->delete();
+        });
     }
 
 	public function scopeIsFollow($query)
@@ -137,4 +143,10 @@ class User extends Authenticatable implements MustVerifyEmail
 	{
 		return $this->morphMany(SystemNotifications::class, 'notifiable')->orderBy('created_at', 'desc');
 	}
+
+	public function comments()
+	{
+		return $this->hasMany( Comments::class, 'u_id', 'id' );
+	}
+
 }
