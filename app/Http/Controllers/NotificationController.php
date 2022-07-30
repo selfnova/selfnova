@@ -14,11 +14,16 @@ class NotificationController extends Controller
      */
     public function index(Request $r)
     {
-        $noty = Notification::where('u_id', $r->user()->id)
+        $noty = Notification::forUser($r->user()->id, false)
 			->with('comment')
-			->latest()
-			->limit(10)
 			->get();
+
+		dispatch(function () use ($noty) {
+			$noty->each(function($n) {
+				if (!$n->status)
+					$n->update(['status' => 1]);
+			});
+		})->afterResponse();
 
 		return response()->json( $noty ) ?: '{}';
     }

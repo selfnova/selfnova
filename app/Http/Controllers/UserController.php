@@ -11,6 +11,7 @@ use App\Models\UserFollow;
 use App\Models\Group;
 use App\Models\ChatUser;
 use App\Models\GroupFollow;
+use App\Models\Notification;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
 
@@ -51,6 +52,10 @@ class UserController extends \App\Http\Controllers\Controller
 	public function me()
     {
 		$data = User::withTrashed()->find(Auth::id());
+
+		$data->unread_noty = Notification::forUser($data->id, true)->count();
+
+
 		$data->unread_msg = 0;
 
 		$chats = ChatUser::where('u_id', Auth::id())->get();

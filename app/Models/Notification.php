@@ -9,6 +9,10 @@ class Notification extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+		'status'
+	];
+
 	protected $casts = [
 		'created_at' => 'datetime:d.m.Y в H:i',
 	];
@@ -22,5 +26,15 @@ class Notification extends Model
 	protected function serializeDate($date)
 	{
 		return $date->timezone('Europe/Moscow')->format('Y-m-d H:i:s');
+	}
+
+	protected function scopeForUser($query, $user_id, $onlyOnread = false)
+	{
+		$query->where('u_id', $user_id)
+			  ->latest()
+			  ->limit(15);
+
+		if ($onlyOnread)
+			$query->where('status', 0);
 	}
 }
