@@ -48,6 +48,8 @@ Route::group(['prefix' => 'v1'], function () {
 		Route::get('news/{alias}', [NewsController::class, 'show']);
 		Route::get('news/{id}/comments', [NewsController::class, 'comments']);
 
+		Route::get('posts/{post_id}/views', [ViewController::class, 'index']);
+
 		Route::get('alias/{alias}', function($alias) {
 			$user = User::select('id')->where( 'alias', $alias )->first();
 
@@ -112,7 +114,6 @@ Route::group(['prefix' => 'v1'], function () {
 		Route::apiResource('chats', ChatController::class);
 
 		Route::post('views/mark', [ViewController::class, 'mark']);
-		Route::get('posts/{post_id}/views', [ViewController::class, 'index']);
 
 		Route::post('monet_orders', [MonetOrderController::class, 'store']);
 	});
@@ -169,6 +170,16 @@ Route::group(['prefix' => 'v1'], function () {
 		})->middleware('guest')->name('password.update');
 		// Route::post('logout', 'LogoutController')->middleware('auth:api');
 	});
+
+
+	Route::get('sandbox', function () {
+
+
+		$user = \App\Models\User::find(14);
+
+		return $user;
+
+	})->name('sandbox');
 });
 
 
