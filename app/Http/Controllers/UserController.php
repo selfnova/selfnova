@@ -38,7 +38,7 @@ class UserController extends \App\Http\Controllers\Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Request $r, $id)
     {
 		$data = User::where( 'users.id', $id )
 			->isFollow()
@@ -113,7 +113,7 @@ class UserController extends \App\Http\Controllers\Controller
 			{
 				$query->select('u_id')
 					->from( with( new UserFollow )->getTable() )
-					->where('to_id', Auth::user()->id );
+					->where('to_id', Auth::id() );
 			})
 			->isFollow()
 			->latest()
@@ -128,7 +128,7 @@ class UserController extends \App\Http\Controllers\Controller
 			{
 				$query->select('to_id')
 					->from( with( new UserFollow )->getTable() )
-					->where('u_id', Auth::user()->id );
+					->where('u_id', Auth::id() );
 			})
 			->isFollow()
 			->latest()
@@ -143,7 +143,7 @@ class UserController extends \App\Http\Controllers\Controller
 			{
 				$query->select('to_id')
 					->from( with( new GroupFollow )->getTable() )
-					->where('u_id', Auth::user()->id );
+					->where('u_id', Auth::id() );
 			})
 			->withTrashed()
 			->isFollow()

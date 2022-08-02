@@ -69,7 +69,7 @@ class Post extends Model
 			{
 				$query->select('to_id')
 				->from( with( new UserFollow )->getTable() )
-				->where('u_id', Auth::user()->id );
+				->where('u_id', Auth::id() );
 			})
 			->whereNull('g_id')
 			->latest();
@@ -88,7 +88,7 @@ class Post extends Model
 			{
 				$query->select('to_id')
 				->from( with( new GroupFollow )->getTable() )
-				->where('u_id', Auth::user()->id );
+				->where('u_id', Auth::id() );
 			})
 			->latest();
 

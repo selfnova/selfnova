@@ -27,45 +27,49 @@ date_default_timezone_set('Europe/Moscow');
 
 Route::group(['prefix' => 'v1'], function () {
 
-	//===== Public / Half public API =====
-	Route::get('public/users/{id}', [UserController::class, 'show']);
-	Route::apiResource('users.posts', \PostUserController::class)->shallow();
-	Route::apiResource('users.followers', \FollowerController::class);
-	Route::get('users/{userId}/followings', [FollowerController::class, 'indexFollowings']);
-	Route::get('users/{userId}/followingGroups', [FollowerController::class, 'indexFollowingGroups']);
+	Route::middleware(['auth_or_guest:api'])->group(function () {
+		//===== Public / Half public API =====
+		Route::get('public/users/{id}', [UserController::class, 'show']);
+		Route::apiResource('users.posts', \PostUserController::class)->shallow();
+		Route::apiResource('users.followers', \FollowerController::class);
+		Route::get('users/{userId}/followings', [FollowerController::class, 'indexFollowings']);
+		Route::get('users/{userId}/followingGroups', [FollowerController::class, 'indexFollowingGroups']);
 
-	Route::get('public/groups/{id}', [GroupController::class, 'show']);
-	Route::apiResource('groups.posts', \PostGroupController::class)->shallow();
-	Route::apiResource('groups.products', \ProductController::class)->shallow();
-	Route::apiResource('groups.reviews', \ReviewsController::class)->shallow();
-	Route::apiResource('groups.orders', \OrderController::class)->shallow();
-	Route::get('groups/{groupId}/followers', [FollowerController::class, 'groupsFollower']);
+		Route::get('public/groups/{id}', [GroupController::class, 'show']);
+		Route::apiResource('groups.posts', \PostGroupController::class)->shallow();
+		Route::apiResource('groups.products', \ProductController::class)->shallow();
+		Route::apiResource('groups.reviews', \ReviewsController::class)->shallow();
+		Route::apiResource('groups.orders', \OrderController::class)->shallow();
+		Route::get('groups/{groupId}/followers', [FollowerController::class, 'groupsFollower']);
 
-	Route::apiResource('comment', \CommentController::class);
-	Route::apiResource('posts.comments', \CommentController::class);
-	Route::get('news', [NewsController::class, 'index']);
-	Route::get('news/{alias}', [NewsController::class, 'show']);
-	Route::get('news/{id}/comments', [NewsController::class, 'comments']);
+		Route::apiResource('comment', \CommentController::class);
+		Route::apiResource('posts.comments', \CommentController::class);
+		Route::get('news', [NewsController::class, 'index']);
+		Route::get('news/{alias}', [NewsController::class, 'show']);
+		Route::get('news/{id}/comments', [NewsController::class, 'comments']);
 
-	Route::get('alias/{alias}', function($alias) {
-		$user = User::select('id')->where( 'alias', $alias )->first();
+		Route::get('alias/{alias}', function($alias) {
+			$user = User::select('id')->where( 'alias', $alias )->first();
 
-		if ( $user ) $link = '/user/'.$user->id;
-		else {
-			$group = Group::select('id')->where( 'alias', $alias )->first();
+			if ( $user ) $link = '/user/'.$user->id;
+			else {
+				$group = Group::select('id')->where( 'alias', $alias )->first();
 
-			if ( $group ) $link = '/groups/'.$group->id;
-			else return false;
-		}
+				if ( $group ) $link = '/groups/'.$group->id;
+				else return false;
+			}
 
-		return response()->json( ['link' => $link] ) ?: '{}';
+			return response()->json( ['link' => $link] ) ?: '{}';
+		});
+
+		Route::get('cities', function() {
+			$data = City::orderBy('name')->get();
+
+			return response()->json( $data ) ?: '{}';
+		});
 	});
 
-	Route::get('cities', function() {
-		$data = City::orderBy('name')->get();
 
-		return response()->json( $data ) ?: '{}';
-	});
 
 	//===== Private API =====
 
