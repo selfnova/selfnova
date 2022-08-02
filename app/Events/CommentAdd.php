@@ -31,7 +31,17 @@ class CommentAdd implements ShouldBroadcast
 		$post = Post::find($comment->type_id);
 
 		$noty = new Notification;
-		$noty->u_id = $post->u_id;
+
+		if ($post->u_id == $this->comment->u_id) {
+			if ($this->comment->reply_id) {
+				$noty->u_id = $this->comment->reply_id;
+			} else {
+				return;
+			}
+		} else {
+			$noty->u_id = $post->u_id;
+		}
+
 		$noty->type_id = $comment->id;
 		$noty->type = 'comment';
 		$noty->status = 0;
