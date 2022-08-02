@@ -66,7 +66,9 @@ class MessageController extends Controller
 	protected function replaceLink( $text )
 	{
 		$preg = '/((https|http):\/\/[a-zA-Z0-9-.\/\?\=\&\%\_\(\)\,а-яёА-Я\#]+)/';
-		$link = '<a target="_blank" href="$1">$1</a>';
+
+		if ( strpos( $text, 'selfnova.' ) ) $link = '<a href="$1">$1</a>';
+		else $link = '<a target="_blank" href="$1">$1</a>';
 
 		return preg_replace($preg, $link, $text);
 	}
