@@ -19,9 +19,6 @@ class MonetOrder extends Model
 
 		static::creating(function ($model) {
 
-			if (!$model->check())
-				return false;
-
 		});
 	}
 }
