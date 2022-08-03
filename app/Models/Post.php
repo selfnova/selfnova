@@ -106,6 +106,12 @@ class Post extends Model
 			->with('group:id,name,avatar', 'user:id,name,last_name,avatar', 'comments', 'viewers');
 	}
 
+	public function isView()
+	{
+		return $this->hasOne( 'App\Models\View', 'post_id', 'id' )
+			->where('viewer_id', Auth::id() );
+	}
+
 	public function viewers()
 	{
 		return $this->hasOne( 'App\Models\View', 'post_id', 'id' )
