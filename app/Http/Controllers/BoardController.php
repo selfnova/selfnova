@@ -40,13 +40,15 @@ class BoardController extends \App\Http\Controllers\Controller
 
 	public function search(Request $request)
 	{
+		$qLower = mb_strtolower($request->get('q'));
+
 		$data['users'] = User::whereRaw('CONCAT( LOWER(`name`), LOWER(`last_name`) ) REGEXP ?',
-			[strtolower($request->get('q'))])
+			[$qLower])
 			->isFollow()
 			->get();
 		$data['groups'] = Group::whereRaw(
 				'LOWER(`name`) REGEXP ?',
-				[$request->get('q')]
+				[$qLower]
 			)
 			->isFollow()
 			->get();
