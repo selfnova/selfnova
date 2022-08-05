@@ -25,23 +25,14 @@ class CommentAdd implements ShouldBroadcast
      */
 	protected $comment;
 
-	public function __construct( Comments $comment)
+	public function __construct( Comments $comment, $u_id )
 	{
 		$this->comment = $comment;
 		$post = Post::find($comment->type_id);
 
 		$noty = new Notification;
 
-		if ($post->u_id == $this->comment->u_id) {
-			if ($this->comment->reply_id) {
-				$noty->u_id = $this->comment->reply_id;
-			} else {
-				return;
-			}
-		} else {
-			$noty->u_id = $post->u_id;
-		}
-
+		$noty->u_id = $u_id;
 		$noty->type_id = $comment->id;
 		$noty->type = 'comment';
 		$noty->status = 0;

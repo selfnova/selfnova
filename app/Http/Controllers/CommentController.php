@@ -43,13 +43,22 @@ class CommentController extends Controller
 
 		if ( $request->get('type') ) $create_data['type'] = $request->get('type');
 
-		$comment = Comments::create($create_data);
+		$created = Comments::create($create_data);
 
-		$data = Comments::with('user:id,name,last_name,avatar')->find( $comment->id );
+		$comment = Comments::with('user:id,name,last_name,avatar')->find( $created->id );
+		$post = Post::find($comment->type_id);
 
-		broadcast(new CommentAdd( $data ) )->toOthers();
 
-		return response()->json( $data ) ?: '{}';
+		if ($comment->reply_id) {
+			broadcast(new CommentAdd( $comment, $comment->reply_id ) )->toOthers();
+		}
+
+		if ($post->u_id != $comment->u_id) {
+			broadcast(new CommentAdd( $comment, $post->u_id ) )->toOthers();
+		}
+
+
+		return response()->json( $comment ) ?: '{}';
     }
 
 	protected function replaceLink( $text )
